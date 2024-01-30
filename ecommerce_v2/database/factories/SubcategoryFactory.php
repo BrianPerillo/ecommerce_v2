@@ -32,7 +32,7 @@ class SubcategoryFactory extends Factory
     {
         return $this->state(function (array $attributes){
             return [
-                'name' => $this->faker->unique()->randomElement(['Campera de Hilo', 'Campera de Running'])
+                'name' => $this->faker->unique()->randomElement(['Buzo Canguro', 'Buzo Clásico'])
             ];
         });
     }

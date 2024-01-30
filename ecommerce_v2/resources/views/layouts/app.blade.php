@@ -38,7 +38,7 @@
         </x-header>
 
         <div class="min-h-screen">
-            @livewire('navigation-menu')
+            @livewire('custom-navigation-menu')
 
             <!-- Page Content -->
             <main style="min-height:86vh">

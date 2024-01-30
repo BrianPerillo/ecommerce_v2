@@ -25,7 +25,7 @@
         <link rel="stylesheet"  href="{{ asset('css/owlcarousel/owl.carousel.css') }}">
         <link rel="stylesheet"  href="{{ asset('css/owlcarousel/owl.theme.default.css') }}">
 
-          
+
         <!-- Slider -->
 
         <x-slider-home>

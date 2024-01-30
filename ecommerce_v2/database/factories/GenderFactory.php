@@ -13,7 +13,7 @@ class GenderFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->randomElement(['Hombre', 'Mujer'])
+            'name' => $this->faker->unique()->randomElement(['Mujer', 'Hombre'])
         ];
     }
 }

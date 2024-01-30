@@ -15,7 +15,7 @@ class ProductosController extends Controller
 
     public function home(){ 
 
-        $destacados = Product::offset(32)->limit(3)->get()->all();
+        $destacados = Product::limit(3)->get()->all(); //Product::offset(32)->limit(3)->get()->all();
         $products = Product::get()->all();
 
         return view('index')->with(compact('destacados','products'));

@@ -14,8 +14,8 @@ class ColorFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->randomElement(['Azul', 'Negro', 'Rojo','Blanco','Amarillo']),
-            'color' => '#'
+            'name' => $this->faker->unique()->randomElement(['Azul', 'Negro', 'Rojo','Blanco','Amarillo', 'Verde']),
+            'color' => $this->faker->unique()->randomElement(['#000000', '#00008B', '#FF0000','#FFFAF0','#FFD700', '#008000']),
         ];
     }
 }

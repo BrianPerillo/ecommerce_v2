@@ -21,7 +21,7 @@ class SubcategorySeeder extends Seeder
         Subcategory::factory()->count(3)->remera()->create(['category_id' => $category_id]);
 
 
-        $category = Category::where('name', '=', 'Camperas')->first();
+        $category = Category::where('name', '=', 'Buzos')->first();
         $category_id = $category->id;
 
         Subcategory::factory()->count(2)->campera()->create(['category_id' => $category_id]);

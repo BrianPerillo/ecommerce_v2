@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Color;
 use Illuminate\Database\Seeder;
 
-class ColorSeeder extends Seeder
+class ProductSizeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +13,6 @@ class ColorSeeder extends Seeder
      */
     public function run()
     {
-        Color::factory()->count(6)->create();
+        //
     }
 }
