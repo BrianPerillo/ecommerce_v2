@@ -26,7 +26,7 @@
             <link rel="stylesheet" href="{{ asset('css/product_card.css') }}">
             <!-- Propios -->
             <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-
+           
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -50,13 +50,11 @@
        
         @stack('modals')
 
-       
-
-
+        @livewireScripts
     </body>
 </html>
 
-@livewireScripts
+
 <!-- Main -->
 <script src="{{ asset('js/main.js') }}" defer></script>
 <!-- JQuery -->

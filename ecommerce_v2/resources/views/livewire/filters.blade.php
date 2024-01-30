@@ -16,12 +16,16 @@
                             <div class="col-md-12 mb-5">
                                 <h4 class="mb-3" style="font-size: 22px">Tipo</h4>
                                     @foreach($subcategories as $subcategory)
-                                        <button class="filter_button mb-2" id="subcategory" wire:click="filterSubcategory({{$subcategory->id}})" type="submit">
+                                        <button class="filter_button mb-2" id="subcategory" wire:click="filterSubcategory({{$subcategory->id}})" type="button">
                                             @if($subcategorySelected==$subcategory->id)
                                                 <p class="m-0 ml-2"  style="font-size: 18px;font-weight: bold;">{{$subcategory->name}}<span class="ml-2" style="color:red">x</span></p>
                                             @else 
                                                 <p class="m-0 ml-2">{{$subcategory->name}}</p>
                                             @endif
+                                            <div wire:loading>
+                                                
+                                                Cargando...
+                                            </div>
                                         </button>
                                         <br>
                                     @endforeach
@@ -30,7 +34,7 @@
                             <div class="col-md-12 mb-5">
                                 <h4 class="mb-3" style="font-size: 22px">Talle</h4>
                                     @foreach($sizes as $size)
-                                        <button class="filter_button mb-2" id="size" wire:click="filterSize({{$size->id}})" type="submit">
+                                        <button class="filter_button mb-2" id="size" wire:click="filterSize({{$size->id}})" type="button">
                                             @if($sizeSelected==$size->id) 
                                                 <p class="m-0 ml-2" style="font-size: 18px;font-weight: bold;">{{$size->name}}<span class="ml-2" style="color:red">x</span></p>
                                             @else 
