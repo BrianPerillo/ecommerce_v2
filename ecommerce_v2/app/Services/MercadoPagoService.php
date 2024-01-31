@@ -17,7 +17,7 @@ class MercadoPagoService
         MercadoPagoConfig::setAccessToken(env("MERCADOPAGO_ACCESS_TOKEN"));
     }
 
-    public function createPreference()
+    public function createPreference($order_id)
     {
         $client = new PreferenceClient();
 
@@ -46,7 +46,7 @@ class MercadoPagoService
         }
 
         $preference = $client->create([
-            "external_reference" => "1", //Es el ID de compra
+            "external_reference" => $order_id, //Es el ID de compra
             "items"=> $products,
             "payment_methods" => [
             "default_payment_method_id" => "master",
@@ -59,6 +59,7 @@ class MercadoPagoService
             "default_installments" => 1
         ]]);
 
-        dd($preference);
+        return $preference;
+
     }
 }

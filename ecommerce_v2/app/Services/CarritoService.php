@@ -32,7 +32,7 @@ class CarritoService
         session()->forget('type'); 
         session()->put('message', "$message");
         session()->put('type', "$type");
-        
+
     }
 
     public function createOrder()
@@ -55,5 +55,9 @@ class CarritoService
             $order_product->price = $product->total_price;
             $order_product->save();
         }  
+        
+        return $order;
+
     }
 }
+

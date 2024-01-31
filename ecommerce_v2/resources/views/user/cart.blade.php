@@ -8,6 +8,9 @@
     <div class="py-12 bg-white">
 
         <div class="container" style="overflow: hidden">
+
+        @if(!isset($preferencia_url))
+
             <h1>{{"Carrito"}}</h1>
 
             @if(sizeof($cart_products)>0)
@@ -208,8 +211,14 @@
 
             <form class="row" action="{{route('processPayment')}}" method="post" style="width:69%;margin-top:30px;border-radius:20px;">
                 @csrf
-                <button>asdf</button>
+                <button class="btn btn-primary" type="submit">Pagar Compra</button>
             </form>
+        
+        @else 
+
+            <iframe src={{$preferencia_url}} width="100%", height="600px"></iframe>
+
+        @endif
 
         </div>
 

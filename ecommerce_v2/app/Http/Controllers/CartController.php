@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\Product;
@@ -164,9 +165,14 @@ class CartController extends Controller
     
     public function processPayment(){
 
-        $this->carritoService->createOrder();
+        $order = $this->carritoService->createOrder();
 
-        $this->mercadoPagoServices->createPreference();
+        $preferencia = $this->mercadoPagoServices->createPreference($order->id);
+        $preferencia_url = $preferencia->init_point;
+
+        $user = auth()->user();
+
+        return view('user.cart', $user)->with(compact('preferencia_url'));
         
     }
 
