@@ -206,6 +206,11 @@
                 {{$cart_products->links()}}
             </div>
 
+            <form class="row" action="{{route('processPayment')}}" method="post" style="width:69%;margin-top:30px;border-radius:20px;">
+                @csrf
+                <button>asdf</button>
+            </form>
+
         </div>
 
     </div>

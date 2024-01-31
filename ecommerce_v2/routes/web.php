@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductosController::class, "home"] )->name('index');
 
+Route::post('/payments', [PaymentController::class, "processPayment"])->name('processPayment');
+Route::get('/payment', [PaymentController::class, "processPayment"])->name('getprocessPayment');
+
 Route::get('/editform/{cart_product}', [CartController::class, "form_edit_cart"] )->name('edit.carrito');
 Route::put('/edit/{cart_product}', [CartController::class, "edit_cart"] )->name('confirm_edit.carrito');
 Route::delete('/delete/{cart_product}', [CartController::class, "delete_cart"] )->name('delete.carrito');
@@ -33,5 +37,7 @@ Route::get('/remeras/{category}/{gender}', [ProductosController::class, "index"]
 Route::get('/buzos/{category}/{gender}', [ProductosController::class, "index"])->name('productos.buzos');
 Route::get('/pantalones/{category}/{gender}', [ProductosController::class, "index"])->name('productos.pantalones');
 Route::get('/zapatillas/{category}/{gender}', [ProductosController::class, "index"])->name('productos.zapatillas');
+
+
 
 Route::get('/{category}/{product}', [ProductosController::class, "show"])->name('productos.show');
