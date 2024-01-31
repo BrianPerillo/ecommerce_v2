@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -10,11 +11,16 @@ use App\Models\User;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Models\Cart_Product;
-use App\Models\Color;
-use Illuminate\Support\Facades\URL;
+use App\Services\CarritoService;
+use App\Services\MercadoPagoService;
 
 class CartController extends Controller
 {
+
+    public function __construct(
+        private MercadoPagoService $mercadoPagoServices,
+        private CarritoService $carritoService
+    ) {}
     
     public function index(User $user){
         
@@ -51,21 +57,17 @@ class CartController extends Controller
         $cart_products = Cart_Product::where('cart_id', "$cart_id")->paginate(8);
 
         //Guardo datos para consultar colores y talles disponibles de ese producto a editar
-
         $id_product = $cart_product->product_detail->id;
         
         $product = Product::find("$id_product");
 
         //Guardo colores de ese producto
-
         $colors =  $product->colors;
 
         //Guardo talles de ese producto
-
         $sizes =  $product->sizes;
 
         //Paso id del cart_product a editar
-
         $cart_product_id = $cart_product->id;
 
         return view('user.cart')->with(compact('cart_products', 'edit', 'colors', 'sizes', 'cart_product_id'));
@@ -99,7 +101,6 @@ class CartController extends Controller
 
         $cart_id = $cart->id;
         $cart_products = Cart_Product::where('cart_id', "$cart_id")->paginate(8);
-
 
         return redirect()->route('user.cart', "$user->id");
 
@@ -155,31 +156,18 @@ class CartController extends Controller
 
             }
 
+            $this->carritoService->agregarProductoCarrito($request, $cart, $product);
 
-                $cart_product = new Cart_Product();
-
-                $cart_product->product_id = $product->id;
-                $cart_product->cart_id = $cart->id;
-                $cart_product->quantity = $request->quantity;
-                $cart_product->total_price = $request->quantity*$product->price;
-                $cart_product->color_id = $request->color;
-                $cart_product->size_id = $request->size;
-                $cart_product->save();
-            
-
-                $message = "Producto Agregado al carrito!";
-                $type = "success";
-
-                session()->forget('message'); 
-                session()->forget('type'); 
-                session()->put('message', "$message");
-                session()->put('type', "$type");
-
-
-                return Redirect::back();
+            return Redirect::back();
            
     }
+    
+    public function processPayment(){
 
+        $this->carritoService->createOrder();
 
+        $this->mercadoPagoServices->createPreference();
+        
+    }
 
 }

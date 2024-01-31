@@ -17,7 +17,7 @@ class MercadoPagoService
         MercadoPagoConfig::setAccessToken(env("MERCADOPAGO_ACCESS_TOKEN"));
     }
 
-    public function cretePreference()
+    public function createPreference()
     {
         $client = new PreferenceClient();
 
@@ -59,6 +59,6 @@ class MercadoPagoService
             "default_installments" => 1
         ]]);
 
-        return $preference;
+        dd($preference);
     }
 }
