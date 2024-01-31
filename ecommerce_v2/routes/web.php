@@ -23,13 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ProductosController::class, "home"] )->name('index');
 
 Route::post('/payments', [PaymentController::class, "processPayment"])->name('processPayment');
-Route::get('/payment', [PaymentController::class, "processPayment"])->name('getprocessPayment');
 
 Route::get('/editform/{cart_product}', [CartController::class, "form_edit_cart"] )->name('edit.carrito');
 Route::put('/edit/{cart_product}', [CartController::class, "edit_cart"] )->name('confirm_edit.carrito');
 Route::delete('/delete/{cart_product}', [CartController::class, "delete_cart"] )->name('delete.carrito');
 
-Route::get('/cart/{user}/productos', [CartController::class, "index"])->name('user.cart');
+Route::middleware(['auth:sanctum', 'verified'])->get('/cart/{user}/productos', [CartController::class, "index"])->name('user.cart');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/cart/{product}', [CartController::class, "agregar_al_carrito"] )->name('agregar_al_carrito');
 
