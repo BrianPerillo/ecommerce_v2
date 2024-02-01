@@ -45,7 +45,6 @@ class ProductosController extends Controller
 
     public function show(Category $category, Product $product){
 
-        $product = $product;
         $name = $category->name;
 
         return view('productos.show')->with(compact('name', 'product'));

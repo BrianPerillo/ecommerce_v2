@@ -12,7 +12,8 @@
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "geocoder-php/google-maps-provider": "^4.7",
+        "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^8.12",
         "laravel/jetstream": "^2.2",
         "laravel/sanctum": "^2.6",
@@ -31,7 +32,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "extra": {
         "laravel": {
