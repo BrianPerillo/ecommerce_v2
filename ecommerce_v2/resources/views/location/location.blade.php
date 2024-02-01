@@ -47,10 +47,17 @@
     
         </section>
 
+        <form id="search_stores_aut" action="{{ route('location.search') }}" class="my-5 row text-center flex-grow-1">
+    
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <button type="submit" class="btn btn-secondary">Buscar</button>
+            </div>
+
+        </form>
 
     </div>
 
-    
+
     <script
     src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
