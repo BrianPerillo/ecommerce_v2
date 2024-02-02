@@ -19,7 +19,7 @@ class CreateStoresTable extends Migration
             $table->string('state', 50);
             $table->string('city', 50);
             $table->string('street', 70);
-            $table->string('street number', 15);
+            $table->string('street_number', 15);
             $table->string('phone', 30);
             $table->timestamps();
         });

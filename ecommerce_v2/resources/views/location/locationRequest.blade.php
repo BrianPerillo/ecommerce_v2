@@ -50,17 +50,17 @@
                             resultsGrid.empty(); // Limpia cualquier contenido previo
 
                             //Iteración de la data recibida y se agregan cards al front
-                            $.each(data.pharmacies, function (index, pharmacy) {  
+                            $.each(data.stores, function (index, store) {  
 
-                                console.log(pharmacy.name);
+                                console.log(store.street);
                                 const card = `
                                     <div class="col-md-4 mb-4">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="card-title text-center">${pharmacy.name}</h5>
+                                                <h5 class="card-title text-center">${store.street}</h5>
                                             </div>
                                             <div class="card-body">
-                                                <p class="card-text text-center" style="font-size:20px">${pharmacy.address}</p>
+                                                <p class="card-text text-center" style="font-size:20px">${street.street_number}</p>
                                             </div>
                                         </div>
                                     </div>

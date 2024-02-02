@@ -1,9 +1,11 @@
 <?php
 
+namespace App\Services;
 
-namespace App;
+use App\Services;
+use Illuminate\Support\Facades\Cache;
 
-class LocationCalculator
+class LocationCalculatorService
 {
 
     // Calcular la distancia entre dos ubicaciones
@@ -25,6 +27,19 @@ class LocationCalculator
         $distance = $earthRadius * $c;
     
         return $distance;
+    }
+
+    public function isInCache($cacheKey){
+    
+        // Verifico si la respuesta está en caché. Si ya se buscó desde la misma ubicación.
+        if (Cache::has($cacheKey)) {
+            $origin = Cache::get($cacheKey);
+            // Si la respuesta viene de la caché, devolver las direcciones almacenadas en caché
+            return $origin;
+        }
+
+        return null;
+
     }
 
 }
