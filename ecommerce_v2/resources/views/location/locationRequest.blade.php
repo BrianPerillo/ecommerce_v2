@@ -63,7 +63,6 @@
                                         </div>
                                     </div>
                                 `;
-
                                 resultsGrid.append(card);
 
                         },
