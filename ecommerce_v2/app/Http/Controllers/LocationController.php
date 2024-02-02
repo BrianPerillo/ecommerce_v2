@@ -31,9 +31,14 @@ class LocationController extends Controller
     public function search(Request $request)
     {   
         //Guardamos data recibida:
-        $data = [];
-        $data['lat'] = -34.9298454;
-        $data['long'] = -57.9623982;
+        $data = $request->all();
+
+        //Datos hardcodeados para pruebas
+        //$data = [];
+        //$data['lat'] = -34.9298454;
+        //$data['long'] = -57.9623982;
+        //$data['lat'] = -34.608729;
+        //$data['long'] = -58.397211;
 
         //$data = $request->all();
         $maxResultados = 3;
@@ -57,7 +62,7 @@ class LocationController extends Controller
         $isInCache = $this->locationCalculator->isInCache($cacheKey);
      
         if($isInCache != null){ //Si la cacheKey ya estaba en cache se devuelven los datos desde caché.
-            return response()->json(['stores' => $isInCache, 'fromCache' => true]);
+            return response()->json(['store' => $isInCache, 'fromCache' => true]);
         }
 
         // Compara la distancia de la ubicacion recibida contra la de las ubicaciones almacenadas en caché
@@ -79,7 +84,7 @@ class LocationController extends Controller
         // Si está cerca de alguna ubicación en caché, devuelve desde la caché
         if ($isCloseToCachedLocation) {
             $origin = ['fromCache' => true];
-            return response()->json(['stores' => $filterCachedLocations, 'cachedLocations' => $origin]);
+            return response()->json(['store' => $filterCachedLocations, 'cachedLocations' => $origin]);
         }
     
 
@@ -143,7 +148,7 @@ class LocationController extends Controller
     
         $origin['fromCache'] = false;
 
-        return response()->json(['stores' => $nearestStore, 'cachedLocations' => $origin]);
+        return response()->json(['store' => $nearestStore, 'cachedLocations' => $origin]);
         
     }
 

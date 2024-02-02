@@ -43,32 +43,28 @@
                         },
                         success: function (data) {
                             Swal.close();
-                            console.log(data.data);
+                            console.log(data);
 
                             // Procesa y muestra los resultados en cards de Bootstrap
                             const resultsGrid = $('#results-grid');
                             resultsGrid.empty(); // Limpia cualquier contenido previo
 
                             //Iteración de la data recibida y se agregan cards al front
-                            $.each(data.stores, function (index, store) {  
-
-                                console.log(store.street);
+                                console.log(data.store);
                                 const card = `
                                     <div class="col-md-4 mb-4">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="card-title text-center">${store.street}</h5>
+                                                <h5 class="card-title text-center">${data.store.street}</h5>
                                             </div>
                                             <div class="card-body">
-                                                <p class="card-text text-center" style="font-size:20px">${street.street_number}</p>
+                                                <p class="card-text text-center" style="font-size:20px">${data.store.street_number}</p>
                                             </div>
                                         </div>
                                     </div>
                                 `;
 
                                 resultsGrid.append(card);
-
-                            });
 
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
