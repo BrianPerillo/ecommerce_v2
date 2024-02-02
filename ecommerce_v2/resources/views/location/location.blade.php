@@ -18,11 +18,11 @@
 
         <section class="container" style="margin-top:25px ">
 
-            <h5 class="text-center">Buscar Farmacias Cercanas</h5>
+            <h5 class="text-center">Busca la tienda más cercana a tu ubicación</h5>
             <form id="search_stores_aut" action="#" class="my-5 row text-center flex-grow-1">
     
                 <div class="col-12 d-flex align-items-center justify-content-center">
-                    <button type="submit" class="btn btn-primary">Buscar</button>
+                    <button type="submit" class="btn btn-primary">Buscar tienda</button>
                 </div>
     
             </form>

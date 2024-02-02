@@ -119,6 +119,7 @@ class LocationController extends Controller
                 'city' => $store->city,
                 'state' => $store->state, 
                 'country' => $store->country,
+                'phone' => $store->phone,
                 'distance' => intval(round($distance))
             ];
 

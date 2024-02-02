@@ -55,10 +55,11 @@
                                     <div class="col-md-4 mb-4">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="card-title text-center">${data.store.street}</h5>
+                                                <h5 class="card-title text-center">${data.store.city}</h5>
                                             </div>
                                             <div class="card-body">
-                                                <p class="card-text text-center" style="font-size:20px">${data.store.street_number}</p>
+                                                <p class="card-text text-center" style="font-size:15px">${data.store.street} ${data.store.street_number}</p>
+                                                <p class="card-text text-center" style="font-size:15px">Tel.: ${data.store.phone}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -71,7 +72,7 @@
 
                             async function initMap() {
                                 // The location of Uluru
-                                const position = { lat: -34.9298514, lng: -57.9624017};
+                                const position = { lat: data.store.lat, lng: data.store.long};
                                 // Request needed libraries.
                                 //@ts-ignore
                                 const { Map } = await google.maps.importLibrary("maps");
@@ -79,7 +80,7 @@
 
                                 // The map, centered at Uluru
                                 map = new Map(document.getElementById("map"), {
-                                    zoom: 13,
+                                    zoom: 14,
                                     center: position,
                                     mapId: "DEMO_MAP_ID",
                                 });
