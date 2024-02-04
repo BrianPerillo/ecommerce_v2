@@ -66,3 +66,20 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <!-- Product Card-->
 <script src="{{ asset('js/product_card.js') }}" defer></script>
+<!-- Pusher Notifications-->
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('702010d00508cb8a47ad', {
+      cluster: 'sa1'
+    });
+
+    var channel = pusher.subscribe('ecommerce-channel');
+    channel.bind('order-complete', function(data) {
+      alert(JSON.stringify(data));
+    });
+    
+</script>

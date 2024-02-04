@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Events\OrderComplete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -164,6 +164,8 @@ class CartController extends Controller
     }
     
     public function processPayment(){
+
+        event(new OrderComplete('Nuevo Pedido'));
 
         $order = $this->carritoService->createOrder();
 
