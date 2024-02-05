@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\TokenController as ControllersTokenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,3 +45,4 @@ Route::get('/location/searchStores', [LocationController::class, "search"])->nam
 
 Route::get('/{category}/{product}', [ProductosController::class, "show"])->name('productos.show');
 
+Route::post('/user/storetoken', [TokenController::class, "store_token"])->name('store.token');

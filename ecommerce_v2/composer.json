@@ -18,9 +18,12 @@
         "laravel/jetstream": "^2.2",
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.5",
+        "laravel/ui": "^3.4",
         "livewire/livewire": "^2.12",
         "mercadopago/dx-php": "3.0.2",
-        "pusher/pusher-php-server": "^7.2"
+        "minishlink/web-push": "^8.0",
+        "pusher/pusher-php-server": "^7.2",
+        "pusher/pusher-push-notifications": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

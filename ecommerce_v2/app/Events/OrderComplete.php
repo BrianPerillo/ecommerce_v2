@@ -9,6 +9,8 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Pusher\Pusher;
+use Minishlink\WebPush\WebPush;
 
 class OrderComplete implements ShouldBroadcast //Agregamos "implements ShouldBroadcast"
 {
@@ -44,6 +46,29 @@ class OrderComplete implements ShouldBroadcast //Agregamos "implements ShouldBro
      */
     public function broadcastAs(){
         return 'order-complete';
+    }
+
+        /**
+     * Get the data to broadcast.
+     *
+     * @return array
+     */
+    public function broadcastWith()
+    {
+        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
+            'cluster' => env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true,
+        ]);
+
+        return [
+             $pusher->trigger('ecommerce-channel', 'order-complete', ['name' => 'Nuevo mensaje'])
+        ];
+
+        /*
+        return [
+            'name' => 'Nuevo mensaje'
+       ];
+       */
     }
 
 }

@@ -26,7 +26,9 @@
             <link rel="stylesheet" href="{{ asset('css/product_card.css') }}">
             <!-- Propios -->
             <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-           
+            <!-- Estilos para alertas js -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -68,18 +70,96 @@
 <script src="{{ asset('js/product_card.js') }}" defer></script>
 <!-- Pusher Notifications-->
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<!-- Estilos para alertas js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" defer></script>
+<!-- Push min js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js" ></script>
+<script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
+
+
 <script>
 
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
 
-    var pusher = new Pusher('702010d00508cb8a47ad', {
+    var pusher = new Pusher("{{env('PUSHER_APP_KEY')}}", {
       cluster: 'sa1'
     });
 
     var channel = pusher.subscribe('ecommerce-channel');
     channel.bind('order-complete', function(data) {
-      alert(JSON.stringify(data));
+        toastr.success(JSON.stringify(data.name))
     });
-    
+
 </script>
+
+{{-- 
+<script>
+
+const checkPermission = () => {
+    if(!('serviceWorker' in navigator)){
+        throw new Error("No support for service worker!")
+    }
+
+    if(!('Notification' in window)){
+        throw new Error("No support from notification API");
+    }
+}
+
+const registerSW = async () => {
+    const registration = await navigator.serviceWorker.register("{{asset('js/sw.js')}}");
+    return registration;
+}
+
+const requestNotificationPermission = async () => {
+    const permission = await Notification.requestPermission();
+
+    if(permission !== 'granted'){
+        throw new Error("Notification permission not granted")
+    }
+}
+
+const main = async () => {
+    checkPermission()
+    const reg = await registerSW();
+    reg.showNotification("Hello Word");
+}
+
+main()
+
+</script>
+--}}
+
+
+{{-- 
+<script>
+
+    // Registrar el service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("{{ asset('js/service_worker.js') }}").then((registration) => {
+            console.log('Service Worker registrado con éxito');
+
+            registration.pushManager.subscribe({ 
+                userVisibleOnly: true,
+                applicationServerKey: "{{env('PUSHER_APP_KEY')}}"
+            })
+                .then((subscription) => {
+                    console.log('Usuario suscrito a las notificaciones push:', subscription);
+                })
+                .catch((error) => {
+                    console.error('Error al suscribir al usuario a las notificaciones push:', error);
+                });
+        });
+    }
+    // Manejar el evento 'push'
+    navigator.serviceWorker.addEventListener('message', (event) => {
+    const data = event.data.json();
+    const notificationOptions = {
+        title: data.title,
+    };
+
+    self.registration.showNotification(data.title, notificationOptions);
+});
+  </script>
+--}}

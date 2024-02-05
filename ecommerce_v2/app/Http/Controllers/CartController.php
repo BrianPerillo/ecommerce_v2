@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Pusher\PushNotifications\PushNotifications;
+use Pusher\Pusher;
+use Minishlink\WebPush\WebPush;
+use Minishlink\WebPush\VAPID;
 
 use App\Models\User;
 use App\Models\Product;
@@ -14,6 +18,7 @@ use App\Models\Cart;
 use App\Models\Cart_Product;
 use App\Services\CarritoService;
 use App\Services\MercadoPagoService;
+
 
 class CartController extends Controller
 {
@@ -165,6 +170,51 @@ class CartController extends Controller
     
     public function processPayment(){
 
+        // Enviar evento de pedido completado
+        event(new OrderComplete('Nueva Orden'));
+
+        $url = 'https://fcm.googleapis.com/fcm/send';
+
+        $FcmToken = User::whereNotNull('device_token')->pluck('device_token')->all();
+
+        $serverKey = env('SERVER_KEY');
+    
+        $data = [
+            "registration_ids" => $FcmToken,
+            "notification" => [
+                "title" => 'title_test',
+                "body" => 'body_test',  
+            ]
+        ];
+        $encodedData = json_encode($data);
+    
+        $headers = [
+            'Authorization:key=' . $serverKey,
+            'Content-Type: application/json',
+        ];
+    
+        $ch = curl_init();
+        
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        // Disabling SSL Certificate support temporarly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
+        // Execute post
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }        
+        // Close connection
+        curl_close($ch);
+        // FCM response
+
+
+        /*
         event(new OrderComplete('Nuevo Pedido'));
 
         $order = $this->carritoService->createOrder();
@@ -175,7 +225,8 @@ class CartController extends Controller
         $user = auth()->user();
 
         return view('user.cart', $user)->with(compact('preferencia_url'));
-        
+        */
+
     }
 
 }

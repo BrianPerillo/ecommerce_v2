@@ -128,7 +128,8 @@
           
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script src="{{ asset('js/slider.js') }}"></script>
-    <script type="text/javascript">
+    
+    <!-- <script type="text/javascript">
             
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-36251023-1']);
@@ -141,7 +142,7 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
             
-    </script>
+    </script> -->
 
   
 <script src="{{ asset('js/destacados_carousel.js') }}"></script>

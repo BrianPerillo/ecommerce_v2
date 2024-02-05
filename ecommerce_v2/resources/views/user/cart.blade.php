@@ -213,7 +213,7 @@
                 @csrf
                 <button class="btn btn-primary" type="submit">Pagar Compra</button>
             </form>
-        
+            <button onclick="startFCM()" class="btn btn-primary" type="submit">startFCM</button>
         @else 
 
             <iframe src={{$preferencia_url}} width="100%", height="600px"></iframe>
@@ -252,4 +252,84 @@
             })
         });
 
+</script>
+
+
+<!-- Firebase FMC section -->
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
+
+
+<script>
+    window.firebaseConfig = {
+        apiKey: "{{ env('FIREBASE_API_KEY') }}",
+        authDomain: "{{ env('FIREBASE_AUTHDOMAIN') }}",
+        projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
+        storageBucket: "{{env('FIREBASE_STORAGE_BUCKET')}}",
+        messagingSenderId: "{{ env('FIREBASE_MESSAGING_SENDER_ID') }}",
+        appId: "{{ env('FIREBASE_APP_ID') }}",
+        measurementId: "{{ env('FIREBASE_MEASUREMENT_ID') }}"
+    };
+</script>
+
+
+<script>
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register("{{asset('/firebase-messaging-sw.js')}}")
+  .then(function(registration) {
+    console.log('Registration successful, scope is:', registration.scope);
+  }).catch(function(err) {
+    console.log('Service worker registration failed, error:', err);
+  });
+}
+    var firebaseConfig = {
+        apiKey: "{{env('FIREBASE_API_KEY')}}",
+        authDomain: "{{env('FIREBASE_AUTHDOMAIN')}}",
+        projectId: "{{env('FIREBASE_PROJECT_ID')}}",
+        storageBucket: "{{env('FIREBASE_STORAGE_BUCKET')}}",
+        messagingSenderId: "{{env('FIREBASE_MESSAGING_SENDER_ID')}}",
+        appId: "{{env('FIREBASE_APP_ID')}}",
+        measurementId: "{{env('FIREBASE_MEASUREMENT_ID')}}",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    function startFCM() {
+        messaging
+            .requestPermission()
+            .then(function () {
+                return messaging.getToken()
+            })
+            .then(function (response) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '{{ route("store.token") }}',
+                    type: 'POST',
+                    data: {
+                        token: response
+                    },
+                    dataType: 'JSON',
+                    success: function (response) {
+                        alert('Token stored.');
+                    },
+                    error: function (error) {
+                        alert(error);
+                    },
+                });
+            }).catch(function (error) {
+                alert(error);
+            });
+    }
+    messaging.onMessage(function (payload) {
+        const title = payload.notification.title;
+        const options = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+        new Notification(title, options);
+    });
 </script>
