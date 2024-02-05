@@ -171,7 +171,7 @@ class CartController extends Controller
     public function processPayment(){
 
         // Enviar evento de pedido completado
-        event(new OrderComplete('Nueva Orden'));
+        event(new OrderComplete('Nuevo Pedido'));
 
         $url = 'https://fcm.googleapis.com/fcm/send';
 
@@ -213,10 +213,6 @@ class CartController extends Controller
         curl_close($ch);
         // FCM response
 
-
-        /*
-        event(new OrderComplete('Nuevo Pedido'));
-
         $order = $this->carritoService->createOrder();
 
         $preferencia = $this->mercadoPagoServices->createPreference($order->id);
@@ -225,7 +221,6 @@ class CartController extends Controller
         $user = auth()->user();
 
         return view('user.cart', $user)->with(compact('preferencia_url'));
-        */
 
     }
 
