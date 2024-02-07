@@ -14,6 +14,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "geocoder-php/google-maps-provider": "^4.7",
         "guzzlehttp/guzzle": "^7.8",
+        "jeroennoten/laravel-adminlte": "^3.9",
         "laravel/framework": "^8.12",
         "laravel/jetstream": "^2.2",
         "laravel/sanctum": "^2.6",

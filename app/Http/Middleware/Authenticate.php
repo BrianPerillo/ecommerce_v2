@@ -16,6 +16,7 @@ class Authenticate extends Middleware
     
     protected function redirectTo($request)
     {   
+       
         //Guardo url previa en session para poder recuperarla en el archivo "RedirectIfAuthenticated.php" que es el que redirige al usuario logueado donde 
         //le indiquemos, entonces ahí recupero la url guardada en sesión y lo redirijo a la misma página en la que estaba.
         $previous_url = URL::previous();
@@ -23,7 +24,8 @@ class Authenticate extends Middleware
 
         if (! $request->expectsJson()) {
             
-            return route('login');
+            return route('panel.adminLogIn');
+
         }
 
         

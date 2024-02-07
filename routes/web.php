@@ -5,6 +5,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PanelController;
 use App\Http\Controllers\TokenController as ControllersTokenController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,9 +31,12 @@ Route::get('/editform/{cart_product}', [CartController::class, "form_edit_cart"]
 Route::put('/edit/{cart_product}', [CartController::class, "edit_cart"] )->name('confirm_edit.carrito');
 Route::delete('/delete/{cart_product}', [CartController::class, "delete_cart"] )->name('delete.carrito');
 
-Route::middleware(['auth:sanctum', 'verified'])->post('/payment', [CartController::class, "processPayment"])->name('processPayment');
-Route::middleware(['auth:sanctum', 'verified'])->get('/cart/{user}/productos', [CartController::class, "index"])->name('user.cart');
-Route::middleware(['auth:sanctum', 'verified'])->get('/cart/{product}', [CartController::class, "agregar_al_carrito"] )->name('agregar_al_carrito');
+// Rutas protegidas CartController
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/payment', [CartController::class, "processPayment"])->name('processPayment');
+    Route::get('/cart/{user}/productos', [CartController::class, "index"])->name('user.cart');
+    Route::get('/cart/{product}', [CartController::class, "agregar_al_carrito"] )->name('agregar_al_carrito');
+});
 
 Route::get('/remeras/{category}/{gender}', [ProductosController::class, "index"])->name('productos.remeras');
 Route::get('/buzos/{category}/{gender}', [ProductosController::class, "index"])->name('productos.buzos');
@@ -46,3 +50,11 @@ Route::get('/location/searchStores', [LocationController::class, "search"])->nam
 Route::get('/{category}/{product}', [ProductosController::class, "show"])->name('productos.show');
 
 Route::post('/user/storetoken', [TokenController::class, "store_token"])->name('store.token');
+
+Route::get('/adminlogin', [PanelController::class, "adminLogIn"])->name('panel.adminLogIn');
+
+// Rutas protegidas AdminPanel
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
+});
+

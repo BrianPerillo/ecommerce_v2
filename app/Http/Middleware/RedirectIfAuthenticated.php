@@ -24,7 +24,7 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
 
                 $previous_url = $request->session()->get('previous_url');
-
+             
                  return redirect("$previous_url");
                 // return redirect(RouteServiceProvider::HOME);
 
