@@ -26,35 +26,33 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductosController::class, "home"] )->name('index');
 
+Route::get('/location', [LocationController::class, "show"])->name('location.show');
+Route::get('/location/searchStores', [LocationController::class, "search"])->name('location.search');
 
-Route::get('/editform/{cart_product}', [CartController::class, "form_edit_cart"] )->name('edit.carrito');
-Route::put('/edit/{cart_product}', [CartController::class, "edit_cart"] )->name('confirm_edit.carrito');
-Route::delete('/delete/{cart_product}', [CartController::class, "delete_cart"] )->name('delete.carrito');
+// Rutas protegidas AdminPanel
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
+    Route::get('/admin/saveproducts', [PanelController::class, "saveproducts"])->name('panel.products');
+});
 
 // Rutas protegidas CartController
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/payment', [CartController::class, "processPayment"])->name('processPayment');
     Route::get('/cart/{user}/productos', [CartController::class, "index"])->name('user.cart');
     Route::get('/cart/{product}', [CartController::class, "agregar_al_carrito"] )->name('agregar_al_carrito');
+    Route::get('/editform/{cart_product}', [CartController::class, "form_edit_cart"] )->name('edit.carrito');
+    Route::put('/edit/{cart_product}', [CartController::class, "edit_cart"] )->name('confirm_edit.carrito');
+    Route::delete('/delete/{cart_product}', [CartController::class, "delete_cart"] )->name('delete.carrito');
+    Route::post('/payment', [CartController::class, "processPayment"])->name('processPayment');
 });
 
 Route::get('/remeras/{category}/{gender}', [ProductosController::class, "index"])->name('productos.remeras');
 Route::get('/buzos/{category}/{gender}', [ProductosController::class, "index"])->name('productos.buzos');
 Route::get('/pantalones/{category}/{gender}', [ProductosController::class, "index"])->name('productos.pantalones');
 Route::get('/zapatillas/{category}/{gender}', [ProductosController::class, "index"])->name('productos.zapatillas');
-
-
-Route::get('/location', [LocationController::class, "show"])->name('location.show');
-Route::get('/location/searchStores', [LocationController::class, "search"])->name('location.search');
-
 Route::get('/{category}/{product}', [ProductosController::class, "show"])->name('productos.show');
 
 Route::post('/user/storetoken', [TokenController::class, "store_token"])->name('store.token');
 
 Route::get('/adminlogin', [PanelController::class, "adminLogIn"])->name('panel.adminLogIn');
 
-// Rutas protegidas AdminPanel
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
-});
 

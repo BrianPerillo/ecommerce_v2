@@ -20,4 +20,10 @@ class PanelController extends Controller
 
     }
 
+    public function saveproducts(){ 
+dd('sdf');
+        return view('panel.products');
+
+    }
+
 }
