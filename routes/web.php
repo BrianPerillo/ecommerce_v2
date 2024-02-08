@@ -32,7 +32,7 @@ Route::get('/location/searchStores', [LocationController::class, "search"])->nam
 // Rutas protegidas AdminPanel
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
-    Route::get('/admin/saveproducts', [PanelController::class, "saveproducts"])->name('panel.products');
+    Route::get('/admin/saveproducts', [PanelController::class, "saveproducts"])->name('livewire.products');
 });
 
 // Rutas protegidas CartController
