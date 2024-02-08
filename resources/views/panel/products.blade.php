@@ -10,7 +10,7 @@
     @section('content')
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8 mr-4"> <!-- Dos columnas en monitores -->
-            <form action="{{route('panel.save')}}" method="post">
+            <form action="{{route('panel.save_product')}}" method="post">
                 @csrf
 
                 <div class="row">

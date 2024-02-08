@@ -26,15 +26,38 @@ class PanelController extends Controller
 
     }
 
-    public function formProducts(){ 
+    public function formProducts(Request $request){ 
 
         $categories = Category::get()->all();
         $subcategories = Subcategory::get()->all();
         $genders = Gender::get()->all();
         $colors = Color::get()->all();
         $sizes = Size::get()->all();
-
-        return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+        
+        switch ($request->section) {
+            case 'products':
+                return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+                break;
+            case 'categories':
+                return view('panel.categories')->with(compact('categories'));
+                break;;
+                break;
+            case 'subcategories':
+                return view('panel.products');
+                break;
+            case 'sizes':
+                return view('panel.products');
+                break;  
+            case 'colors':
+                return view('panel.products');
+                break;
+            case 'genders':
+                return view('panel.products');
+                break;                             
+            default:
+                # code...
+            break;
+        }
 
     }
 
@@ -60,4 +83,17 @@ class PanelController extends Controller
 
         return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
     }
+
+    public function saveCategory(Request $request){ 
+
+        $category = new Category();
+    
+        $category->name = $request->name;
+        $category->save();
+
+        $categories = Category::get()->all();
+
+        return view('panel.categories')->with(compact('categories'));
+    }
+
 }
