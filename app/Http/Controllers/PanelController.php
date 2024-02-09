@@ -7,6 +7,7 @@ use App\Models\Color;
 use App\Models\Gender;
 use App\Models\Product;
 use App\Models\Size;
+use App\Models\Stock;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -74,7 +75,7 @@ class PanelController extends Controller
         $product->subcategory_id = $request->subcategory;
         $product->gender_id = $request->gender;
         $product->save();
-   
+
         //Obtenemos todas las combinaciones de colores y talles
         $sizes = $request->sizes;
         $colors = $request->colors;
@@ -94,7 +95,7 @@ class PanelController extends Controller
             ]);
          }
 
-        /*
+        //Guardamos Stock 
         $combinaciones = array();
         foreach ($sizes as $valor1) {
           foreach ($colors as $valor2) {
@@ -103,16 +104,14 @@ class PanelController extends Controller
         }
 
         foreach ($combinaciones as $combinacion) {
-            DB::table('products_sizes')->insert([
-                'product_id' => $product->id, 
-                'size_id' => $combinacion[0],
-            ]);
-            DB::table('colors_products')->insert([
-                'product_id' => $product->id, 
-                'color_id' => $combinacion[1],
-            ]);
+            $stock = new Stock();
+            $stock->product_id = $product->id;
+            $stock->size_id = $combinacion[0];
+            $stock->color_id = $combinacion[1];
+            $stock->stock = $request->stock;
+            $stock->save();
          }
-        */ 
+
         
         //Obtenemos features para enviarle a la vista
         $categories = Category::get()->all();
