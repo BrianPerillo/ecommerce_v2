@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
     Route::get('/admin/form/{section}', [PanelController::class, "formProducts"])->name('panel.products');
     Route::post('/admin/saveproducts', [PanelController::class, "saveProducts"])->name('panel.save_product');
-    Route::post('/admin/savecategory', [PanelController::class, "saveCategory"])->name('panel.save_category');
+    Route::post('/admin/savecategory', [PanelController::class, "saveFeature"])->name('panel.save_feature');
 });
 
 // Rutas protegidas CartController

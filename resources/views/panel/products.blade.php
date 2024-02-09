@@ -75,7 +75,7 @@
                                 @if($sizes !== null)
                                     @foreach($sizes as $size)
                                     <div class="form-check mr-3">
-                                        <input class="form-check-input" type="checkbox" value="{{$size->id}}" id="{{$size->id}}" name="size[]">
+                                        <input class="form-check-input" type="checkbox" value="{{$size->id}}" id="{{$size->id}}" name="sizes[]">
                                         <label class="form-check-label" for="{{$size->id}}">{{$size->name}}</label>
                                     </div>
                                     @endforeach
@@ -91,7 +91,7 @@
                                 @if($colors !== null)
                                     @foreach($colors as $color)
                                     <div class="form-check mr-3">
-                                        <input class="form-check-input" type="checkbox" value="{{$color->id}}" id="{{$color->id}}" name="color[]">
+                                        <input class="form-check-input" type="checkbox" value="{{$color->id}}" id="{{$color->id}}" name="colors[]">
                                         <label class="form-check-label" for="{{$color->id}}">{{$color->name}}</label>
                                     </div>
                                     @endforeach
