@@ -311,48 +311,114 @@ return [
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
-        ['header' => 'CARGAR'],
+        //['header' => 'CARGAR'],
         [
-            'text'        => 'Productos',
-            'url'         => 'admin/form/products',
-            'icon'        => 'far fa-fw fa-file',
-            //'label'       => 4,
-            'label_color' => 'success',
+            'text'    => 'Productos',
+            'icon'    => 'far fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Cargar',
+                    'url'  => 'admin/form/products',
+                ],
+                [
+                    'text' => 'Editar',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Eliminar',
+                    'url'  => '#',
+                ],
+            ],
         ],
         [
-            'text'        => 'Categorias',
-            'url'         => 'admin/form/categories',
-            'icon'        => 'far fa-fw fa-file',
-            //'label'       => 4,
-            'label_color' => 'success',
+            'text'    => 'Categorias',
+            'icon'    => 'far fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Cargar',
+                    'url'  => 'admin/form/categories',
+                ],
+                [
+                    'text' => 'Editar',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Eliminar',
+                    'url'  => '#',
+                ],
+            ],
         ],
         [
-            'text'        => 'Subcategorias',
-            'url'         => 'admin/form/subcategories',
-            'icon'        => 'far fa-fw fa-file',
-            //'label'       => 4,
-            'label_color' => 'success',
+            'text'    => 'Subcategorias',
+            'icon'    => 'far fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Cargar',
+                    'url'  => 'admin/form/subcategories',
+                ],
+                [
+                    'text' => 'Editar',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Eliminar',
+                    'url'  => '#',
+                ],
+            ],
         ],
         [
-            'text'        => 'Talles',
-            'url'         => 'admin/form/sizes',
-            'icon'        => 'far fa-fw fa-file',
-            //'label'       => 4,
-            'label_color' => 'success',
+            'text'    => 'Talles',
+            'icon'    => 'far fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Cargar',
+                    'url'  => 'admin/form/sizes',
+                ],
+                [
+                    'text' => 'Editar',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Eliminar',
+                    'url'  => '#',
+                ],
+            ],
         ],
         [
-            'text'        => 'Colores',
-            'url'         => 'admin/form/colors',
-            'icon'        => 'far fa-fw fa-file',
-            //'label'       => 4,
-            'label_color' => 'success',
+            'text'    => 'Colores',
+            'icon'    => 'far fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Cargar',
+                    'url'  => 'admin/form/colors',
+                ],
+                [
+                    'text' => 'Editar',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Eliminar',
+                    'url'  => '#',
+                ],
+            ],
         ],
         [
-            'text'        => 'Generos',
-            'url'         => 'admin/form/genders',
-            'icon'        => 'far fa-fw fa-file',
-            //'label'       => 4,
-            'label_color' => 'success',
+            'text'    => 'Generos',
+            'icon'    => 'far fa-fw fa-file',
+            'submenu' => [
+                [
+                    'text' => 'Cargar',
+                    'url'  => 'admin/form/genders',
+                ],
+                [
+                    'text' => 'Editar',
+                    'url'  => '#',
+                ],
+                [
+                    'text' => 'Eliminar',
+                    'url'  => '#',
+                ],
+            ],
         ],
         ['header' => 'account_settings'],
         [
