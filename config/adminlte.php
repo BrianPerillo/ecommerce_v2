@@ -464,6 +464,7 @@ return [
                     'text' => 'Stock',
                     'url'  => '#',
                     'icon'  => 'fas  fa-edit fa-sm',
+                    'shift'   => 'ml-3',
                 ],
             ],
         ],
