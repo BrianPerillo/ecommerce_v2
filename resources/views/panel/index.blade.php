@@ -15,5 +15,11 @@
 @stop
 
 @section('js')
-    <script> console.log('Hi!'); </script>
+    <script> console.log('Hi!'); 
+        Echo.channel(`ecommerce-channel`)
+        .listen('order-complete', (data) => {
+            console.log('Evento escuchado');
+        });
+    </script>
+    
 @stop

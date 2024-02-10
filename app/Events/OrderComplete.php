@@ -55,7 +55,7 @@ class OrderComplete implements ShouldBroadcast //Agregamos "implements ShouldBro
      */
     public function broadcastWith()
     {
-        $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
+       /* $pusher = new Pusher(env('PUSHER_APP_KEY'), env('PUSHER_APP_SECRET'), env('PUSHER_APP_ID'), [
             'cluster' => env('PUSHER_APP_CLUSTER'),
             'useTLS' => true,
         ]);
@@ -63,12 +63,12 @@ class OrderComplete implements ShouldBroadcast //Agregamos "implements ShouldBro
         return [
              $pusher->trigger('ecommerce-channel', 'order-complete', ['name' => 'Nuevo mensaje'])
         ];
-
-        /*
+        */
+        
         return [
-            'name' => 'Nuevo mensaje'
+            'name' =>  $this->name
        ];
-       */
+       
     }
 
 }

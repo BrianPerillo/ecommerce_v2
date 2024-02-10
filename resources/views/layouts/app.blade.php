@@ -84,14 +84,18 @@
     Pusher.logToConsole = true;
 
     var pusher = new Pusher("{{env('PUSHER_APP_KEY')}}", {
-      cluster: 'sa1'
+      cluster: "{{env('PUSHER_APP_CLUSTER')}}" 
     });
 
     var channel = pusher.subscribe('ecommerce-channel');
     channel.bind('order-complete', function(data) {
         toastr.success(JSON.stringify(data.name))
     });
-
+    Echo.channel(`ecommerce-channel`)
+        .listen('order-complete', (data) => {
+            console.log('Evento escuchado');
+        });
+        
 </script>
 
 {{-- 
