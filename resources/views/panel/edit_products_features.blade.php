@@ -10,7 +10,7 @@
     @section('content')
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8 mr-4"> <!-- Dos columnas en monitores -->
-            <form action="{{route('panel.save_feature')}}" method="post">
+            <form action="{{route('panel.edit_feature')}}" method="post">
                 @csrf
                 <div class="row">
                     <!-- Columna Izquierda -->
@@ -22,7 +22,7 @@
                             @if(isset($subcategories) && isset($subcategories))
                                 <label for="subcategory">Subcategorias Actuales</label>
                                 @if($subcategories !== null)
-                                    <select type="text" class="form-control" id="subcategory" name="subcategory">
+                                    <select type="text" class="form-control" id="subcategory" name="subcategory" required>
                                         @foreach($subcategories as $subcategory)
                                             <option value="{{$subcategory->id}}" id="{{$subcategory->id}}">{{$subcategory->name}}</option>
                                         @endforeach
@@ -47,7 +47,7 @@
                             @elseif(isset($categories))
                                 <label for="category">Categorías Actuales</label>
                                 @if($categories !== null)
-                                    <select type="text" class="form-control" id="category" name="category">
+                                    <select type="text" class="form-control" id="category" name="category" required>
                                         @foreach($categories as $category)
                                             <option value="{{$category->id}}" id="{{$category->id}}">{{$category->name}}</option>
                                         @endforeach
@@ -65,9 +65,9 @@
                                 
                             {{-- sizes --}}
                             @elseif(isset($sizes))
-                                <label for="size">Talles Actuales</label>
+                                <label for="category">Talles Actuales</label>
                                 @if($sizes !== null)
-                                    <select type="text" class="form-control" id="size" name="size">
+                                    <select type="text" class="form-control" id="size" name="size" required>
                                         @foreach($sizes as $size)
                                             <option value="{{$size->id}}" id="{{$size->id}}">{{$size->name}}</option>
                                         @endforeach
@@ -85,9 +85,9 @@
 
                             {{-- colors --}}
                             @elseif(isset($colors))
-                                <label for="color">Colores Actuales</label>
+                                <label for="category">Colores Actuales</label>
                                 @if($colors !== null)
-                                    <select type="text" class="form-control" id="color" name="color">
+                                    <select type="text" class="form-control" id="color" name="color" required>
                                         @foreach($colors as $color)
                                             <option value="{{$color->id}}" id="{{$color->id}}">{{$color->name}}</option>
                                         @endforeach
@@ -109,7 +109,7 @@
                             @elseif(isset($genders))
                                 <label for="gender">Géneros Actuales</label>
                                 @if($genders !== null)
-                                    <select type="text" class="form-control" id="gender" name="gender">
+                                    <select type="text" class="form-control" id="gender" name="gender" required>
                                         @foreach($genders as $gender)
                                             <option value="{{$gender->id}}" id="{{$gender->id}}">{{$gender->name}}</option>
                                         @endforeach

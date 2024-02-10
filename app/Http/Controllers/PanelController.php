@@ -28,7 +28,7 @@ class PanelController extends Controller
 
     }
 
-    public function formProducts(Request $request){ 
+    public function form(Request $request){ 
 
         $categories = Category::get()->all();
         $subcategories = Subcategory::get()->all();
@@ -54,6 +54,40 @@ class PanelController extends Controller
                 break;
             case 'genders':
                 return view('panel.products_features')->with(compact('genders'));
+                break;                             
+            default:
+                # code...
+            break;
+        }
+
+    }
+
+    public function formEdit(Request $request){ 
+
+        $categories = Category::get()->all();
+        $subcategories = Subcategory::get()->all();
+        $genders = Gender::get()->all();
+        $colors = Color::get()->all();
+        $sizes = Size::get()->all();
+        
+        switch ($request->section) {
+            case 'products':
+                return view('panel.edit_products_features')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+                break;
+            case 'categories':
+                return view('panel.edit_products_features')->with(compact('categories'));
+                break;
+            case 'subcategories':
+                return view('panel.edit_products_features')->with(compact('subcategories', 'categories'));
+                break;
+            case 'sizes':
+                return view('panel.edit_products_features')->with(compact('sizes'));
+                break;  
+            case 'colors':
+                return view('panel.edit_products_features')->with(compact('colors'));
+                break;
+            case 'genders':
+                return view('panel.edit_products_features')->with(compact('genders'));
                 break;                             
             default:
                 # code...
@@ -161,7 +195,7 @@ class PanelController extends Controller
             $color = new Color();
 
             $color->name = $request->name;
-            $color->color = $request->color;            
+            $color->color = $request->hexa;            
             $color->save();
     
             $colors = Color::get()->all();
@@ -177,6 +211,63 @@ class PanelController extends Controller
             $genders = Gender::get()->all();
             
             return view('panel.products_features')->with(compact('genders'));
+        }  
+    }
+
+    public function editFeature(Request $request){ 
+
+        if($request->feature == 'category'){
+
+            $category = Category::where('id', $request->category)->get()->first();
+            $category->name = $request->name;
+            $category->save();
+    
+            $categories = Category::get()->all();
+    
+            return view('panel.edit_products_features')->with(compact('categories'));
+        }
+        elseif($request->feature == 'subcategory'){
+            $subcategory = Subcategory::where('id', $request->subcategory)->get()->first();
+
+            $subcategory->category_id = $request->related_category;
+            $subcategory->name = $request->name;
+            $subcategory->save();
+    
+            $subcategories = Subcategory::get()->all();
+            $categories = Category::get()->all();
+
+            return view('panel.edit_products_features')->with(compact('subcategories', 'categories'));
+        }
+        elseif($request->feature == 'size'){
+            $size = Size::where('id', $request->size)->get()->first();
+
+            $size->name = $request->name;
+            $size->save();
+    
+            $sizes = Size::get()->all();
+            
+            return view('panel.edit_products_features')->with(compact('sizes'));
+        }
+        elseif($request->feature == 'color'){
+            $color = Color::where('id', $request->color)->get()->first();
+
+            $color->name = $request->name;
+            $color->color = $request->hexa;            
+            $color->save();
+    
+            $colors = Color::get()->all();
+            
+            return view('panel.edit_products_features')->with(compact('colors'));
+        }        
+        elseif($request->feature == 'gender'){
+            $gender = Gender::where('id', $request->gender)->get()->first();
+
+            $gender->name = $request->name;      
+            $gender->save();
+    
+            $genders = Gender::get()->all();
+            
+            return view('panel.edit_products_features')->with(compact('genders'));
         }  
     }
 

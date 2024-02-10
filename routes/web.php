@@ -32,9 +32,12 @@ Route::get('/location/searchStores', [LocationController::class, "search"])->nam
 // Rutas protegidas AdminPanel
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
-    Route::get('/admin/form/{section}', [PanelController::class, "formProducts"])->name('panel.products');
+    Route::get('/admin/form/{section}', [PanelController::class, "form"])->name('panel.products');
+    Route::get('/admin/form/edit/{section}', [PanelController::class, "formEdit"])->name('panel.products');
+    Route::get('/admin/form/delete/{section}', [PanelController::class, "formDelete"])->name('panel.products');
     Route::post('/admin/saveproducts', [PanelController::class, "saveProducts"])->name('panel.save_product');
-    Route::post('/admin/savecategory', [PanelController::class, "saveFeature"])->name('panel.save_feature');
+    Route::post('/admin/saveFeature', [PanelController::class, "saveFeature"])->name('panel.save_feature');
+    Route::post('/admin/editFeature', [PanelController::class, "editFeature"])->name('panel.edit_feature');
 });
 
 // Rutas protegidas CartController
