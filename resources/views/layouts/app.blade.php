@@ -91,10 +91,11 @@
     channel.bind('order-complete', function(data) {
         toastr.success(JSON.stringify(data.name))
     });
-    Echo.channel(`ecommerce-channel`)
+    
+    /*Echo.channel(`ecommerce-channel`)
         .listen('order-complete', (data) => {
             console.log('Evento escuchado');
-        });
+        });*/
         
 </script>
 
