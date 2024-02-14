@@ -32,7 +32,7 @@
 
     <script>
     var pusher = new Pusher("{{env('PUSHER_APP_KEY')}}", {
-      cluster: "{{env('PUSHER_APP_CLUSTER')}}" 
+      cluster: "{{env('PUSHER_APP_CLUSTER')}}"  
     });
 
     var channel = pusher.subscribe('ecommerce-channel');
