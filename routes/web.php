@@ -60,4 +60,5 @@ Route::post('/user/storetoken', [TokenController::class, "store_token"])->name('
 
 Route::get('/adminlogin', [PanelController::class, "adminLogIn"])->name('panel.adminLogIn');
 
+Route::post('/api/upload_image', [ProductosController::class, "uploadImage"])->name('api.upload_image');
 

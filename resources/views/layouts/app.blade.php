@@ -77,7 +77,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.8/push.min.js" ></script>
 <script src="https://js.pusher.com/beams/1.0/push-notifications-cdn.js"></script>
 
-
 <script>
 
     // Enable pusher logging - don't include this in production
