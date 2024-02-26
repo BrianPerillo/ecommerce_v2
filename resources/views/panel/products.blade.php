@@ -182,9 +182,11 @@
     myDropzone.on("sending", function(file, xhr, formData) {
         // Obtenemos datos del formulario ademas de las imagenes
         var productName = $("#name").val();
+        var productDescription = $("#description").val();
         var productCategory = $("#category").val();
         var productSubCategory = $("#subcategory").val();
         var productGender = $("#gender").val();
+        var productPrice = $("#price").val();
         var productStock = $("#stock").val();
         // Obtener los valores seleccionados de los checkboxes de color
         var productColor = [];
@@ -198,6 +200,8 @@
 
         // Los agregamos al formData
         formData.append('name', productName);
+        formData.append('description', productDescription);
+        formData.append('price', productPrice);
         formData.append('category', productCategory);
         formData.append('subcategory', productSubCategory);
         formData.append('gender', productGender);

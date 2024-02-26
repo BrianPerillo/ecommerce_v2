@@ -102,12 +102,12 @@ class PanelController extends Controller
         $product = new Product();
 
         $product->name = $request->name;
-        $product->description = "asdf";
+        $product->description = $request->description;
         $product->photo = 'https://www.solodeportes.com.ar/media/catalog/product/cache/3cb7d75bc2a65211451e92c5381048e9/r/e/remera-de-futbol-nike-dri-fit-academy-azul-510020dr1336451-1.jpg';
-        $product->price = 2;
-        $product->category_id = 21;
-        $product->subcategory_id = 14;
-        $product->gender_id = 5;
+        $product->price = $request->price;
+        $product->category_id = $request->category;
+        $product->subcategory_id = $request->subcategory;
+        $product->gender_id = $request->gender;
         $product->save();
 
         //Obtenemos todas las combinaciones de colores y talles
