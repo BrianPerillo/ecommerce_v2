@@ -10,7 +10,7 @@
     @section('content')
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8 mr-4"> <!-- Dos columnas en monitores -->
-            <form action="{{route('panel.save_product')}}" method="post">
+            <form id="my-form"> {{-- action="{{route('panel.save_product')}}" method="post" --}}
                 @csrf
 
                 <div class="row">
@@ -75,7 +75,7 @@
                                 @if($sizes !== null)
                                     @foreach($sizes as $size)
                                     <div class="form-check mr-3">
-                                        <input class="form-check-input" type="checkbox" value="{{$size->id}}" id="{{$size->id}}" name="sizes[]">
+                                        <input class="form-check-input" type="checkbox" value="{{$size->id}}" id="size" name="sizes[]">
                                         <label class="form-check-label" for="{{$size->id}}">{{$size->name}}</label>
                                     </div>
                                     @endforeach
@@ -91,7 +91,7 @@
                                 @if($colors !== null)
                                     @foreach($colors as $color)
                                     <div class="form-check mr-3">
-                                        <input class="form-check-input" type="checkbox" value="{{$color->id}}" id="{{$color->id}}" name="colors[]">
+                                        <input class="form-check-input" type="checkbox" value="{{$color->id}}" id="color" name="colors[]">
                                         <label class="form-check-label" for="{{$color->id}}">{{$color->name}}</label>
                                     </div>
                                     @endforeach
@@ -107,7 +107,7 @@
                                 @if($genders !== null)
                                     @foreach($genders as $gender)
                                     <div class="form-check mr-3">
-                                        <input class="form-check-input" type="radio" value="{{$gender->id}}" id="{{$gender->id}}" name="gender">
+                                        <input class="form-check-input" type="radio" value="{{$gender->id}}" id="gender" name="gender">
                                         <label class="form-check-label" for="{{$gender->id}}">{{$gender->name}}</label>
                                     </div>
                                     @endforeach
@@ -125,6 +125,7 @@
                 </div>
 
                 <button id="saveProduct" type="submit" class="btn btn-primary mt-3" style="width: 100%">Guardar</button>
+
             </form>
         </div>
     </div>
@@ -147,13 +148,13 @@
     <script>
 
     //Guardamos ruta de envió en variable uploadUrl
-    var uploadUrl = "{{ route('api.upload_image') }}";
-
+    var uploadUrl = "{{ route('panel.save_product') }}";
+        
     // Se Inicializa Dropzone en el elemento con ID "my-dropzone"
     Dropzone.autoDiscover = false;
     var myDropzone = new Dropzone("#my-dropzone", {
       url: uploadUrl, // URL a la que se enviarán los archivos
-      autoProcessQueue: false, // Deshabilita la carga automática de archivos
+      autoProcessQueue: false, // Deshabilita la carga automática de archivos para que solo se envíe todo mas tarde al hacer click en el boton guardar.
       maxFilesize: 5, // Tamaño máximo del archivo en MB
       acceptedFiles: ".jpg,.png,.gif", // Tipos de archivos permitidos
       dictDefaultMessage: "Arrastra y suelta archivos aquí o haz clic para seleccionarlos", // Mensaje predeterminado
@@ -161,23 +162,6 @@
       addRemoveLinks: true,
       // Otros ajustes pueden seguirse agregando...
     });
-    
-/*
-    // Evento que se dispara cuando se agregan archivos a la cola
-    myDropzone.on("addedfile", function(file) {
-      console.log("Archivo añadido: " + file.name);
-      // Agregar botón de eliminación para cada archivo
-      var removeButton = Dropzone.createElement("<button class='btn btn-danger btn-sm'>Eliminar</button>");
-      var _this = this;
-      removeButton.addEventListener("click", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        // Eliminar el archivo de Dropzone
-        _this.removeFile(file);
-      });
-      file.previewElement.appendChild(removeButton);
-    });
-*/
 
     // Evento que se dispara cuando se completa la carga de todos los archivos
     myDropzone.on("complete", function(file) {
@@ -192,6 +176,47 @@
       });
            
     });
+   
+    // Evento que se ejecuta antes de enviar los archivos
+    //Drop zone envia la peticion solo no hace falta crearla manualmente con ajax, le podemos indicar otros datos también para que envíe:
+    myDropzone.on("sending", function(file, xhr, formData) {
+        // Obtenemos datos del formulario ademas de las imagenes
+        var productName = $("#name").val();
+        var productCategory = $("#category").val();
+        var productSubCategory = $("#subcategory").val();
+        var productGender = $("#gender").val();
+        var productStock = $("#stock").val();
+        // Obtener los valores seleccionados de los checkboxes de color
+        var productColor = [];
+        $('input[id="color"]:checked').each(function() {
+            productColor.push($(this).val());
+        });
+        var productSize = [];
+        $('input[id="size"]:checked').each(function() {
+            productSize.push($(this).val());
+        });
+
+        // Los agregamos al formData
+        formData.append('name', productName);
+        formData.append('category', productCategory);
+        formData.append('subcategory', productSubCategory);
+        formData.append('gender', productGender);
+        formData.append('stock', productStock);
+        for (var i = 0; i < productSize.length; i++) {
+            formData.append('sizes[]', productSize[i]);
+        }
+        for (var i = 0; i < productColor.length; i++) {
+            formData.append('colors[]', productColor[i]);
+        }
+        //log test
+        formData.forEach(function(value, key){
+            if(Array.isArray(value)){
+                console.log(key + ': ' + value.join(', '));
+            } else {
+                console.log(key + ': ' + value);
+            }
+        });
+    });
 
     // Evento que se dispara cuando se completa la carga y procesamiento de la imagen
     myDropzone.on("success", function(file, response) {
@@ -203,10 +228,14 @@
       console.error("Error al enviar la imagen:", errorMessage);
     });
 
-    // Evento de clic en el botón "Enviar archivos"
-    document.getElementById("saveProduct").addEventListener("click", function() {
-        // Procesa la cola de Dropzone, enviando los archivos al servidor
-      myDropzone.processQueue();
+    // Evento de clic en el botón "Guardar"
+    $("#saveProduct").click(function() {
+
+        event.preventDefault();
+
+        // Procesa la cola de Dropzone, enviando los archivos al servidor junto con la data adicional del formulario.
+        myDropzone.processQueue();
+
     });
 
     </script>

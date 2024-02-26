@@ -30,12 +30,12 @@ Route::get('/location', [LocationController::class, "show"])->name('location.sho
 Route::get('/location/searchStores', [LocationController::class, "search"])->name('location.search');
 
 // Rutas protegidas AdminPanel
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () { //Acá falta chequear que el usuario logueado sea administrador - Agregar roles
     Route::get('/admin', [PanelController::class, "show"])->name('panel.index');
     Route::get('/admin/form/{section}', [PanelController::class, "form"])->name('panel.products');
     Route::get('/admin/form/edit/{section}', [PanelController::class, "formEdit"])->name('panel.products');
     Route::get('/admin/form/delete/{section}', [PanelController::class, "formDelete"])->name('panel.products');
-    Route::post('/admin/saveproducts', [PanelController::class, "saveProducts"])->name('panel.save_product');
+    Route::post('/admin/saveproduct', [PanelController::class, "saveProduct"])->name('panel.save_product');
     Route::post('/admin/saveFeature', [PanelController::class, "saveFeature"])->name('panel.save_feature');
     Route::post('/admin/editFeature', [PanelController::class, "editFeature"])->name('panel.edit_feature');
 });
@@ -59,6 +59,4 @@ Route::get('/{category}/{product}', [ProductosController::class, "show"])->name(
 Route::post('/user/storetoken', [TokenController::class, "store_token"])->name('store.token');
 
 Route::get('/adminlogin', [PanelController::class, "adminLogIn"])->name('panel.adminLogIn');
-
-Route::post('/api/upload_image', [ProductosController::class, "uploadImage"])->name('api.upload_image');
 

@@ -96,23 +96,23 @@ class PanelController extends Controller
 
     }
 
-    public function saveProducts(Request $request){ 
+    public function saveProduct(Request $request){ 
 
         //Guardamos el producto
         $product = new Product();
 
         $product->name = $request->name;
-        $product->description = $request->description;
+        $product->description = "asdf";
         $product->photo = 'https://www.solodeportes.com.ar/media/catalog/product/cache/3cb7d75bc2a65211451e92c5381048e9/r/e/remera-de-futbol-nike-dri-fit-academy-azul-510020dr1336451-1.jpg';
-        $product->price = $request->price;
-        $product->category_id = $request->category;
-        $product->subcategory_id = $request->subcategory;
-        $product->gender_id = $request->gender;
+        $product->price = 2;
+        $product->category_id = 21;
+        $product->subcategory_id = 14;
+        $product->gender_id = 5;
         $product->save();
 
         //Obtenemos todas las combinaciones de colores y talles
-        $sizes = $request->sizes;
-        $colors = $request->colors;
+        $sizes = $request->input('sizes');
+        $colors = $request->input('colors');
 
         //Guardamos combinaciones de producto colors y producto sizes
         foreach ($sizes as $size) {
@@ -121,7 +121,7 @@ class PanelController extends Controller
                 'size_id' => $size,
             ]);
         }
-
+ 
         foreach ($colors as $color) {
             DB::table('colors_products')->insert([
                 'product_id' => $product->id, 
@@ -154,7 +154,24 @@ class PanelController extends Controller
         $colors = Color::get()->all();
         $sizes = Size::get()->all();
 
-        return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+
+        //Guardar imagen
+            if ($request->hasFile('file')) {
+    
+                $file = $request->file('file');
+    
+                // Guarda el archivo en carpeta "uploads"
+                $file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
+                // Devolucion de respuestas
+                return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+                //return response()->json(['message' => 'Imagen cargada con éxito'], 200);
+            } else {
+                // Si no se encontró un archivo en la solicitud, devuelve un mensaje de error
+                return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+                //return response()->json(['message' => 'No se encontró una imagen en la solicitud'], 400);
+            }
+
+        //return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
     }
 
     public function saveFeature(Request $request){ 

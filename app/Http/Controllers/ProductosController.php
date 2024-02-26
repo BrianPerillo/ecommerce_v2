@@ -51,22 +51,5 @@ class ProductosController extends Controller
 
     }
 
-    public function uploadImage(Request $request){
-
-        if ($request->hasFile('file')) {
-
-            $file = $request->file('file');
-
-            // Guarda el archivo en carpeta "uploads"
-            $file->move(public_path('uploads'), $file->getClientOriginalName());
-            // Devolucion de respuestas
-            return response()->json(['message' => 'Imagen cargada con éxito'], 200);
-        } else {
-            // Si no se encontró un archivo en la solicitud, devuelve un mensaje de error
-            return response()->json(['message' => 'No se encontró una imagen en la solicitud'], 400);
-        }
-
-    }
-
 
 }
