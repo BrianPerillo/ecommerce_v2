@@ -13,6 +13,26 @@
             <form id="my-form"> {{-- action="{{route('panel.save_product')}}" method="post" --}}
                 @csrf
 
+                {{-- Select para elegir cual es el producto que se desea editar --}}
+
+                <div class="form-group">
+                    <label for="products">Elige el producto a editar</label>
+                    @if($categories !== null)
+                        <select type="text" class="form-control" id="product" name="product" required>
+                            <option value="">Selecciona una opción...</option>
+                            @foreach($products as $product)
+                                <option value="{{$product->id}}" id="{{$product->id}}">{{$product->name}}</option>
+                            @endforeach
+                        </select>
+                    @else 
+                        <p>No hay productos cargados</p>
+                    @endif  
+                </div>
+
+                </br>
+
+                {{-- Datos del producto a editar --}}
+
                 <div class="row">
                     <!-- Columna Izquierda -->
                     <div class="col">
@@ -56,10 +76,6 @@
                             <input type="number" class="form-control" id="price" name="price" required>
                         </div>
 
-                        <div class="form-group">
-                            <label for="stock">Stock</label>
-                            <input type="number" class="form-control" id="stock" name="stock" required>
-                        </div>
                     </div>
 
                     <!-- Columna Derecha -->
@@ -151,11 +167,59 @@
     <!-- toasts js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" defer></script>
 
+    <!-- Script para detectar el producto seleccionado para editar -->
+    <script>
+
+        // Referencia del elemento select
+        var selectedProduct = document.getElementById("product");
+
+        // url para obtener datos producto
+        var findProductUrl = "{{ route('panel.find_product') }}";
+
+        // Agrego listener para el evento 'change'
+        selectedProduct.addEventListener("change", function(event) {
+            // Valor seleccionado del select
+            var selectedValue = event.target.value;
+            
+            // Verificar si se seleccionó una opción
+            if (selectedValue !== "") {
+                console.log("El usuario seleccionó la opción:", selectedValue);
+                // Petición para obtener los datos del producto
+                $.ajax({
+                    url: findProductUrl,
+                    type: 'POST', 
+                    data: { product: selectedValue }, 
+                    success: function(response) {
+                        console.log(response);
+                        
+                        // Actualizo los valores del formulario con los datos recibidos
+                        $('#name').val(response.nombre);
+                        $('#description').val(response.description);
+                        $('#price').val(response.price);
+                        // Iteracion para opciones checkbox
+                        response.opciones.forEach(function(opcion) {
+                        // Marcar el checkbox correspondiente
+                        $('#' + opcion).prop('checked', true);
+                        });
+                        
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error en la petición Ajax: ' + error);
+                        // Manejar el error si ocurre
+                    }
+                });
+            } else {
+
+            }
+        });
+    </script>
+
+
     <!-- Script para inicializar Dropzone -->
     <script>
 
     //Guardamos ruta de envió en variable uploadUrl
-    var uploadUrl = "{{ route('panel.save_product') }}";
+    var uploadUrl = "{{ route('panel.edit_product') }}";
         
     // Se Inicializa Dropzone en el elemento con ID "my-dropzone"
     Dropzone.autoDiscover = false;
@@ -212,12 +276,12 @@
         });
 
         // Agregamos los datos del formulario al formData
+        formData.append('product', $("#product").val()); //Este es el producto a editar
         formData.append('name', $("#name").val());
         formData.append('description', $("#description").val());
         formData.append('price', $("#price").val());
         formData.append('category', $("#category").val());
         formData.append('subcategory', $("#subcategory").val());
-        formData.append('stock', $("#stock").val());
         for (var i = 0; i < productGenders.length; i++) {
             formData.append('genders[]', productGenders[i]);
         }
@@ -255,7 +319,7 @@
 
     // Evento de clic en el botón "Guardar"
     $("#saveProduct").click(function() {
-
+        
         event.preventDefault();
 
         // Procesa la cola de Dropzone, enviando los archivos al servidor junto con la data adicional del formulario.

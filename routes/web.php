@@ -38,6 +38,8 @@ Route::middleware(['auth:sanctum'])->group(function () { //Acá falta chequear q
     Route::post('/admin/saveproduct', [PanelController::class, "saveProduct"])->name('panel.save_product');
     Route::post('/admin/saveFeature', [PanelController::class, "saveFeature"])->name('panel.save_feature');
     Route::post('/admin/editFeature', [PanelController::class, "editFeature"])->name('panel.edit_feature');
+    Route::post('/admin/editproduct', [PanelController::class, "editProduct"])->name('panel.edit_product');
+    Route::post('/admin/findproduct', [PanelController::class, "findProduct"])->name('panel.find_product');
 });
 
 // Rutas protegidas CartController

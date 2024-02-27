@@ -65,6 +65,7 @@ class PanelController extends Controller
 
     public function formEdit(Request $request){ 
 
+        $products = Product::get()->all();
         $categories = Category::get()->all();
         $subcategories = Subcategory::get()->all();
         $genders = Gender::get()->all();
@@ -73,7 +74,7 @@ class PanelController extends Controller
         
         switch ($request->section) {
             case 'products':
-                return view('panel.edit_products_features')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+                return view('panel.edit_products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes', 'products'));
                 break;
             case 'categories':
                 return view('panel.edit_products_features')->with(compact('categories'));
@@ -187,6 +188,88 @@ class PanelController extends Controller
             }
 
         //return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+    }
+
+
+    //Esta función devuelve los datos del producto a editar
+    public function findProduct(Request $request){
+    
+        $product_data = Product::with('sizes','colors')->where('id', $request->product)->first();
+
+        return response()->json($product_data);
+
+    }
+
+
+    public function editProduct(Request $request){
+
+        //Validaciones
+        
+        // Imagen
+        $this->validate($request, [
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072',
+        ]);
+
+        //Se recupera el producto y se actualizan datos
+        $product = Product::where('id', $request->product)->get()->first();
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->photo = 'https://www.solodeportes.com.ar/media/catalog/product/cache/3cb7d75bc2a65211451e92c5381048e9/r/e/remera-de-futbol-nike-dri-fit-academy-azul-510020dr1336451-1.jpg';
+        $product->price = $request->price;
+        $product->category_id = $request->category;
+        $product->subcategory_id = $request->subcategory;
+        $product->gender_id = $request->genders[0];
+        $product->save();
+    
+        //Obtenemos todas las combinaciones de colores y talles
+        $sizes = $request->input('sizes');
+        $colors = $request->input('colors');
+
+        //Guardamos combinaciones de producto colors y producto sizes
+        foreach ($sizes as $size) {
+            DB::table('products_sizes')->insert([
+                'product_id' => $product->id, 
+                'size_id' => $size,
+            ]);
+        }
+
+        foreach ($colors as $color) {
+            DB::table('colors_products')->insert([
+                'product_id' => $product->id, 
+                'color_id' => $color,
+            ]);
+        }
+
+       /*//Guardo generos
+       foreach ($sizes as $size) {
+           DB::table('products_sizes')->insert([
+               'product_id' => $product->id, 
+               'size_id' => $size,
+           ]);
+       }*/
+
+       //Guardamos Stock 
+       $combinaciones = array();
+       foreach ($sizes as $valor1) {
+         foreach ($colors as $valor2) {
+           $combinaciones[] = array($valor1, $valor2);
+         }
+       }
+
+       foreach ($combinaciones as $combinacion) {
+           $stock = new Stock();
+           $stock->product_id = $product->id;
+           $stock->size_id = $combinacion[0];
+           $stock->color_id = $combinacion[1];
+           $stock->stock = $request->stock;
+           $stock->save();
+        }
+
+
+        $products = Product::get()->all();
+    
+        return view('panel.edit_products')->with(compact('products'));
+
     }
 
     public function saveFeature(Request $request){ 
