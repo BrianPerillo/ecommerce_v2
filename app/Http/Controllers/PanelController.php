@@ -101,6 +101,10 @@ class PanelController extends Controller
 
         //Validaciones
         
+        // Imagen
+        $this->validate($request, [
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072',
+        ]);
 
 
         //Guardamos el producto
@@ -176,12 +180,9 @@ class PanelController extends Controller
                 // Guarda el archivo en carpeta "uploads"
                 $path = Storage::putFileAs('public/product_images', $file, $file->getClientOriginalName());
                 //$file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
-                // Devolucion de respuestas
-                return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
                 //return response()->json(['message' => 'Imagen cargada con éxito'], 200);
             } else {
-                // Si no se encontró un archivo en la solicitud, devuelve un mensaje de error
-                return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
+                // Si no se encontró un archivo en la solicitud, devuelve un mensaje de errorW
                 //return response()->json(['message' => 'No se encontró una imagen en la solicitud'], 400);
             }
 

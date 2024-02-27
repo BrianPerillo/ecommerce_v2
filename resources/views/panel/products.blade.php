@@ -121,7 +121,7 @@
                 {{-- Drag & Drop --}}
 
                 <div id="my-dropzone" class="dropzone col mt-3 mb-3">
-                    <div class="dz-message" data-dz-message><span>Arrastra y suelta archivos aquí o haz clic para seleccionarlos</span></div>
+                    <div class="dz-message" data-dz-message><span>Arrastra y suelta archivos aquí o haz clic para seleccionarlos.</span><p class="mt-2" style="font-size:15px">Tamaño Máximo: 3MB - Formatos permitidos: .jpg, .jpeg y .png</p></div>
                 </div>
 
                 <button id="saveProduct" type="submit" class="btn btn-primary mt-3" style="width: 100%">Guardar</button>
@@ -160,13 +160,22 @@
     // Se Inicializa Dropzone en el elemento con ID "my-dropzone"
     Dropzone.autoDiscover = false;
     var myDropzone = new Dropzone("#my-dropzone", {
-      url: uploadUrl, // URL a la que se enviarán los archivos
-      autoProcessQueue: false, // Deshabilita la carga automática de archivos para que solo se envíe todo mas tarde al hacer click en el boton guardar.
-      maxFilesize: 5, // Tamaño máximo del archivo en MB
-      acceptedFiles: ".jpg,.png,.gif", // Tipos de archivos permitidos
-      dictDefaultMessage: "Arrastra y suelta archivos aquí o haz clic para seleccionarlos", // Mensaje predeterminado
-      createImageThumbnails: true,
-      addRemoveLinks: true,
+        url: uploadUrl, // URL a la que se enviarán los archivos
+        autoProcessQueue: false, // Deshabilita la carga automática de archivos para que solo se envíe todo mas tarde al hacer click en el boton guardar.
+        maxFilesize: 3, // Tamaño máximo del archivo en MB
+        acceptedFiles: ".jpg,.jpeg,.png", // Tipos de archivos permitidos
+        dictDefaultMessage: "Arrastra y suelta archivos aquí o haz clic para seleccionarlos. Tamaño Máximo: 3MB - Formatos permitidos: .jpg, .jpeg, .png", // Mensaje predeterminado
+        createImageThumbnails: true,
+        addRemoveLinks: true,
+        init: function() {
+            this.on("error", function(file, errorMessage) {
+                if (file.accepted === false) {
+                    // Archivo no aceptado por tamaño o formato
+                    toastr.error(JSON.stringify('No se puede cargar este tipo de archivo. Revisa el formato y tamaño'))
+                    this.removeFile(file); // Eliminar el archivo de la cola
+                }
+            });
+        }
       // Otros ajustes pueden seguirse agregando...
     });
 
@@ -238,12 +247,15 @@
 
     // Evento que se dispara cuando hay un error al procesar la imagen
     myDropzone.on("error", function(file, errorMessage, xhr) {
-      console.error("Error al enviar la imagen:", errorMessage);
+        console.error("Error al enviar la imagen:", errorMessage);
+        // Reinicio de la cola de Dropzone para permitir el reenvío de archivos sino no se puede volver a enviar
+        this.removeFile(file);
+        toastr.error(JSON.stringify('Asegurate de completar el formulario'))
     });
 
     // Evento de clic en el botón "Guardar"
     $("#saveProduct").click(function() {
-
+        
         event.preventDefault();
 
         // Procesa la cola de Dropzone, enviando los archivos al servidor junto con la data adicional del formulario.
