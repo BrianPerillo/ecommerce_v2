@@ -107,7 +107,7 @@ class PanelController extends Controller
         $product->price = $request->price;
         $product->category_id = $request->category;
         $product->subcategory_id = $request->subcategory;
-        $product->gender_id = $request->gender;
+        $product->gender_id = $request->genders[0];
         $product->save();
 
         //Obtenemos todas las combinaciones de colores y talles
@@ -128,6 +128,14 @@ class PanelController extends Controller
                 'color_id' => $color,
             ]);
          }
+
+        /*//Guardo generos
+        foreach ($sizes as $size) {
+            DB::table('products_sizes')->insert([
+                'product_id' => $product->id, 
+                'size_id' => $size,
+            ]);
+        }*/
 
         //Guardamos Stock 
         $combinaciones = array();

@@ -107,7 +107,7 @@
                                 @if($genders !== null)
                                     @foreach($genders as $gender)
                                     <div class="form-check mr-3">
-                                        <input class="form-check-input" type="radio" value="{{$gender->id}}" id="gender" name="gender">
+                                        <input class="form-check-input" type="checkbox" value="{{$gender->id}}" id="gender" name="genders[]">
                                         <label class="form-check-label" for="{{$gender->id}}">{{$gender->name}}</label>
                                     </div>
                                     @endforeach
@@ -129,6 +129,8 @@
             </form>
         </div>
     </div>
+</div>
+
     @stop
     
     @section('css')        
@@ -137,14 +139,19 @@
         <!-- Drag & Drop -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
         <link rel="stylesheet" href="{{ asset('css/draganddrop.css') }}">
+        <!-- Estilos para alertas js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     @stop
     
+
     @section('js')      
  
-        <!-- Drag & Drop -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <!-- Drag & Drop -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+    <!-- toasts js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" defer></script>
 
-  <!-- Script para inicializar Dropzone -->
+    <!-- Script para inicializar Dropzone -->
     <script>
 
     //Guardamos ruta de envió en variable uploadUrl
@@ -180,15 +187,8 @@
     // Evento que se ejecuta antes de enviar los archivos
     //Drop zone envia la peticion solo no hace falta crearla manualmente con ajax, le podemos indicar otros datos también para que envíe:
     myDropzone.on("sending", function(file, xhr, formData) {
-        // Obtenemos datos del formulario ademas de las imagenes
-        var productName = $("#name").val();
-        var productDescription = $("#description").val();
-        var productCategory = $("#category").val();
-        var productSubCategory = $("#subcategory").val();
-        var productGender = $("#gender").val();
-        var productPrice = $("#price").val();
-        var productStock = $("#stock").val();
-        // Obtener los valores seleccionados de los checkboxes de color
+
+        // Guardamos datos checkboxes en arrays
         var productColor = [];
         $('input[id="color"]:checked').each(function() {
             productColor.push($(this).val());
@@ -197,15 +197,21 @@
         $('input[id="size"]:checked').each(function() {
             productSize.push($(this).val());
         });
+        var productGenders = [];
+        $('input[id="gender"]:checked').each(function() {
+            productGenders.push($(this).val());
+        });
 
-        // Los agregamos al formData
-        formData.append('name', productName);
-        formData.append('description', productDescription);
-        formData.append('price', productPrice);
-        formData.append('category', productCategory);
-        formData.append('subcategory', productSubCategory);
-        formData.append('gender', productGender);
-        formData.append('stock', productStock);
+        // Agregamos los datos del formulario al formData
+        formData.append('name', $("#name").val());
+        formData.append('description', $("#description").val());
+        formData.append('price', $("#price").val());
+        formData.append('category', $("#category").val());
+        formData.append('subcategory', $("#subcategory").val());
+        formData.append('stock', $("#stock").val());
+        for (var i = 0; i < productGenders.length; i++) {
+            formData.append('genders[]', productGenders[i]);
+        }
         for (var i = 0; i < productSize.length; i++) {
             formData.append('sizes[]', productSize[i]);
         }
@@ -225,6 +231,7 @@
     // Evento que se dispara cuando se completa la carga y procesamiento de la imagen
     myDropzone.on("success", function(file, response) {
       console.log("Imagen enviada con éxito:", response);
+      
     });
 
     // Evento que se dispara cuando hay un error al procesar la imagen
@@ -245,4 +252,3 @@
     </script>
 
     @stop
-</div>
