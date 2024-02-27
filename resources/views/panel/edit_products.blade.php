@@ -191,17 +191,20 @@
                     data: { product: selectedValue }, 
                     success: function(response) {
                         console.log(response);
-                        
+                        //Resetea el form antes de agregar los datos del producto, esto sirve para foreach de los checkbox para que no se acumulen los de un producto con los de otro.
+                        $('#my-form')[0].reset();
                         // Actualizo los valores del formulario con los datos recibidos
-                        $('#name').val(response.nombre);
+                        $('#name').val(response.name);
                         $('#description').val(response.description);
                         $('#price').val(response.price);
+                        $('#category').val(response.category.name);
+                        $('#subcategory').val(response.subcategory.name);
                         // Iteracion para opciones checkbox
-                        response.opciones.forEach(function(opcion) {
+                        response.sizes.forEach(function(size) {
+                            console.log(size.id);
                         // Marcar el checkbox correspondiente
-                        $('#' + opcion).prop('checked', true);
+                            $('#size[value="'+size.id+'"]').prop('checked', true);
                         });
-                        
                     },
                     error: function(xhr, status, error) {
                         console.error('Error en la petición Ajax: ' + error);
@@ -209,7 +212,7 @@
                     }
                 });
             } else {
-
+                $('#my-form')[0].reset();
             }
         });
     </script>

@@ -194,7 +194,7 @@ class PanelController extends Controller
     //Esta función devuelve los datos del producto a editar
     public function findProduct(Request $request){
     
-        $product_data = Product::with('sizes','colors')->where('id', $request->product)->first();
+        $product_data = Product::with('sizes','colors','category','subcategory')->where('id', $request->product)->first();
 
         return response()->json($product_data);
 
