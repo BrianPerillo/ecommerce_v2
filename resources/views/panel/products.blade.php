@@ -231,7 +231,9 @@
     // Evento que se dispara cuando se completa la carga y procesamiento de la imagen
     myDropzone.on("success", function(file, response) {
       console.log("Imagen enviada con éxito:", response);
-      
+      $('#my-form')[0].reset();
+      this.removeFile(file);
+      toastr.success(JSON.stringify('Producto guardado correctamente'))
     });
 
     // Evento que se dispara cuando hay un error al procesar la imagen

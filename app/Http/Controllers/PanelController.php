@@ -11,6 +11,7 @@ use App\Models\Stock;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PanelController extends Controller
 {
@@ -98,6 +99,10 @@ class PanelController extends Controller
 
     public function saveProduct(Request $request){ 
 
+        //Validaciones
+        
+
+
         //Guardamos el producto
         $product = new Product();
 
@@ -169,7 +174,8 @@ class PanelController extends Controller
                 $file = $request->file('file');
     
                 // Guarda el archivo en carpeta "uploads"
-                $file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
+                $path = Storage::putFileAs('public/product_images', $file, $file->getClientOriginalName());
+                //$file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
                 // Devolucion de respuestas
                 return view('panel.products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes'));
                 //return response()->json(['message' => 'Imagen cargada con éxito'], 200);
