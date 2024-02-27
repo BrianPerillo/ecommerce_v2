@@ -190,7 +190,7 @@
                     type: 'POST', 
                     data: { product: selectedValue }, 
                     success: function(response) {
-                        console.log(response.category);
+                        console.log(response);
                         //Resetea el form antes de agregar los datos del producto, esto sirve para foreach de los checkbox para que no se acumulen los de un producto con los de otro.
                         $('#my-form')[0].reset();
                         $('#product').val(response.id);
@@ -200,10 +200,15 @@
                         $('#price').val(response.price);
                         $('#category').val(response.category.id);
                         $('#subcategory').val(response.subcategory.id);
+                        $('#gender[value="'+response.gender_id+'"]').prop('checked', true);
                         response.sizes.forEach(function(size) {
                             console.log(size.id);
-                        // Marcar el checkbox correspondiente
+                        // Marcar el/los checkbox correspondiente
                             $('#size[value="'+size.id+'"]').prop('checked', true);
+                        });
+                        response.colors.forEach(function(size) {
+                        // Marcar el/los checkbox correspondiente
+                            $('#color[value="'+size.id+'"]').prop('checked', true);
                         });
                     },
                     error: function(xhr, status, error) {
