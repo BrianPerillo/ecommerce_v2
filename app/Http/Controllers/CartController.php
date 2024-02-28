@@ -38,6 +38,8 @@ class CartController extends Controller
         $cart_id = $cart->id;
 
         $cart_products = Cart_Product::where('cart_id', "$cart_id")->paginate(8);
+    
+        //dd(response()->json($products = $cart_products[0]->product_detail->images[0]));
 
         return view('user.cart')->with(compact('cart_products'));
 

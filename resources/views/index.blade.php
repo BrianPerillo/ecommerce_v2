@@ -57,7 +57,7 @@
                                     <div class="make3D">
                                         <div class="p-3 product-front">
                                             <div class="shadow"></div>
-                                            <img src="{{$product->photo}}"  style="width:200px;height:200px;margin:auto;"alt="" />
+                                            <img src="{{ asset('storage/product_images/'.$product->images[0]->image_name) }}" alt={{$product->name}}  style="width:200px;height:200px;margin:auto;" />
                                             <div class="image_overlay"></div>
                                             {{-- <div class="add_to_cart">Add to cart</div> --}}
                                             <a href="{{route('productos.show', [$product->category, $product])}}" class="view_gallery">Ver Producto</a>

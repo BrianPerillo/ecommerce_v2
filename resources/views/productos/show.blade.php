@@ -35,10 +35,12 @@
 
                 <div class="col-md-5 p-0 m-3" style="">
 
-                    <figure class="zoom m-auto" onmousemove="zoom(event)" style="width:350px;height:350px;background-image: url({{$product->photo}})">
-                        <img id="photo" class="p-0 m-auto" src="{{$product->photo}}" alt="Remera Negra" style="width:350px;height:350px;"><br>
+                    @foreach($product->images as $image)
+                    <figure class="zoom m-auto" onmousemove="zoom(event)" style="width:350px;height:350px;background-image: url({{ asset('storage/product_images/'.$image->image_name) }})">
+                        <img id="photo" class="p-0 m-auto" src={{ asset('storage/product_images/'.$image->image_name) }} alt={{$product->name}} style="width:350px;height:350px;"><br>
                     </figure>
-
+                    @endforeach
+                    
                     <div class="p-3">
 
                         <div>

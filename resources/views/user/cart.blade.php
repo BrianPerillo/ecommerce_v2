@@ -70,7 +70,7 @@
                             <div class="row">
                                 <!-- Cover -->
                                     <div class="col" style="float:left;margin-right:30px">
-                                        <img src="{{$cart_product->product_detail->photo}}" style="width:70px;">
+                                        <img src={{ asset('storage/product_images/'.$cart_product->product_detail->images[0]->image_name) }} style="width:70px;" alt={{$cart_product->name}} />
                                     </div>
 
                                     <div class="col" style="float:left;margin-top:30px">

@@ -14,7 +14,7 @@
                           >
                           @foreach($products as $product)
                             <div class="image">
-                              <img src="{{$product->photo}}" />
+                              <img src={{ asset('storage/product_images/'.$product->images[0]->image_name) }} alt={{$product->name}} />
                             </div>
                           @endforeach
                           </div>
@@ -44,11 +44,7 @@
                                       {{$product->name}}
                                     </div>
                                     <div class="desc">
-                                      Lorem ipsum dolor sit amet consectetur adipisicing
-                                      elit. Error itaque, libero dignissimos nihil aliquam
-                                      eveniet tenetur cupiditate consectetur quod modi
-                                      repellendus veniam, repellat iusto fugiat temporibus
-                                      officia facere nulla nam.
+                                      {{$product->description}}
                                     </div>
                                     <div class="d-flex justify-content-center justify-content-lg-start">
                                       <a class="btn readMoreBtn" href="{{route('productos.show', [$product->category, $product])}}">

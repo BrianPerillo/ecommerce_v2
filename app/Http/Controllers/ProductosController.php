@@ -16,7 +16,7 @@ class ProductosController extends Controller
     public function home(){ 
 
         $destacados = Product::limit(3)->get()->all(); //Product::offset(32)->limit(3)->get()->all();
-        $products = Product::get()->all();
+        $products = Product::with('images')->get()->all();
 
         return view('index')->with(compact('destacados','products'));
 
@@ -46,6 +46,9 @@ class ProductosController extends Controller
     public function show(Category $category, Product $product){
 
         $name = $category->name;
+
+        $product = Product::with('images')->find($product->id);
+        //dd(response()->json($product));
 
         return view('productos.show')->with(compact('name', 'product'));
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Gender;
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Stock;
@@ -113,7 +114,6 @@ class PanelController extends Controller
 
         $product->name = $request->name;
         $product->description = $request->description;
-        $product->photo = 'https://www.solodeportes.com.ar/media/catalog/product/cache/3cb7d75bc2a65211451e92c5381048e9/r/e/remera-de-futbol-nike-dri-fit-academy-azul-510020dr1336451-1.jpg';
         $product->price = $request->price;
         $product->category_id = $request->category;
         $product->subcategory_id = $request->subcategory;
@@ -180,6 +180,12 @@ class PanelController extends Controller
     
                 // Guarda el archivo en carpeta "uploads"
                 $path = Storage::putFileAs('public/product_images', $file, $file->getClientOriginalName());
+                
+                $image = new Image();
+                $image->product_id = $product->id;
+                $image->image_name = $file->getClientOriginalName();
+                $image->save();
+
                 //$file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
                 //return response()->json(['message' => 'Imagen cargada con éxito'], 200);
             } else {
@@ -214,7 +220,6 @@ class PanelController extends Controller
         $product = Product::where('id', $request->product)->get()->first();
         $product->name = $request->name;
         $product->description = $request->description;
-        $product->photo = 'https://www.solodeportes.com.ar/media/catalog/product/cache/3cb7d75bc2a65211451e92c5381048e9/r/e/remera-de-futbol-nike-dri-fit-academy-azul-510020dr1336451-1.jpg';
         $product->price = $request->price;
         $product->category_id = $request->category;
         $product->subcategory_id = $request->subcategory;

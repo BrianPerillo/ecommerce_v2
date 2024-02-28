@@ -56,7 +56,7 @@ Route::get('/remeras/{category}/{gender}', [ProductosController::class, "index"]
 Route::get('/buzos/{category}/{gender}', [ProductosController::class, "index"])->name('productos.buzos');
 Route::get('/pantalones/{category}/{gender}', [ProductosController::class, "index"])->name('productos.pantalones');
 Route::get('/zapatillas/{category}/{gender}', [ProductosController::class, "index"])->name('productos.zapatillas');
-Route::get('/{category}/{product}', [ProductosController::class, "show"])->name('productos.show');
+Route::get('/{category}/{product}', [ProductosController::class, "show"])->name('productos.show'); //Vista detalle producto
 
 Route::post('/user/storetoken', [TokenController::class, "store_token"])->name('store.token');
 
