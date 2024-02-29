@@ -139,11 +139,11 @@ class PanelController extends Controller
         //Consulta las combinaciones de colores para sobreescribirlas
         //$tallesProducto = DB::table('products_sizes')->where('product_id', $request->product)->get();
 
-        //Elimina las combinaciones de talles y colores preexistentes
+        //Elimina las combinaciones de talles y colores preexistentes para que se eliminen las necesarias en tablas products_sizes & colors_products
         DB::table('products_sizes')->where('product_id', $request->product)->delete();
         DB::table('colors_products')->where('product_id', $request->product)->delete();
 
-        //Guardamos combinaciones de producto colors y producto sizes
+        //Guardado de combinaciones de producto colors y producto sizes
         foreach ($sizes as $size) {
             DB::table('products_sizes')->insert([
                 'product_id' => $request->product, 
@@ -157,7 +157,50 @@ class PanelController extends Controller
                 'color_id' => $color,
             ]);
         }
+       
+        //Eliminación en la tabla Stock de combinaciones de talles y colores que esten en la tabla stocks pero no vengan en la request.
+        Stock::where('product_id', $request->product)
+            ->whereNotIn('size_id', $sizes) //whereNotIn trae los talles que no estén en $sizes, variable que contiene los sizes de la request
+            ->delete(); //Elimina los sizes que no vinieron en la request pero estaban en la base.
+
+        Stock::where('product_id', $request->product)
+            ->whereNotIn('color_id', $colors)
+            ->delete();
+
+        // Obtener los talles y colores existentes en la tabla Stock
+        $existingSizes = Stock::where('product_id', $request->product)->pluck('size_id')->all();
+        $existingColors = Stock::where('product_id', $request->product)->pluck('color_id')->all();
+       
+        foreach ($sizes as $size) { 
+            foreach ($colors as $color) {
+                // Verificar si la combinación de color y talla ya existe en la base de datos
+                $existingStock = Stock::where('product_id', $request->product)
+                    ->where('size_id', $size)
+                    ->where('color_id', $color)
+                    ->first();
         
+                // Si no existe, crear una nueva combinación
+                if (!$existingStock) {
+                    $stock = new Stock();
+                    $stock->product_id = $request->product;
+                    $stock->size_id = $size;
+                    $stock->color_id = $color;
+                    $stock->stock = 10; //Se crea por defecto con Stock 10, luego se puede editar desde el apartado de Stock
+                    $stock->save();
+
+                    // Actualizar los arrays de talles y colores existentes
+                    if (!in_array($size, $existingSizes)) {
+                        $existingSizes[] = $size;
+                    }
+                    if (!in_array($color, $existingColors)) {
+                        $existingColors[] = $color;
+                    }
+                }
+            }
+        }    
+
+
+
        /*//Guardo generos
        foreach ($sizes as $size) {
            DB::table('products_sizes')->insert([
@@ -183,7 +226,7 @@ class PanelController extends Controller
         }
 
         //Guardar imagenes nuevas
-
+        //No es necesario iterar nada ya que si se quiere enviar más de una imagen dropzone realiza envios por separa por c/imagen si son dos hace 2 envios.
         if ($request->hasFile('file')) {
     
             $file = $request->file('file');
@@ -199,11 +242,8 @@ class PanelController extends Controller
             //$file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
             //return response()->json(['message' => 'Imagen cargada con éxito'], 200);
         } else {
-            // Si no se encontró un archivo en la solicitud, devuelve un mensaje de errorW
-            //return response()->json(['message' => 'No se encontró una imagen en la solicitud'], 400);
+
         }
-
-
 
         return response()->json($request);
 
