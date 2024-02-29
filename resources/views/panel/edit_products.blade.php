@@ -327,7 +327,7 @@
         });
 
         // Agregar datos del formulario al formData
-        formData.append('product', $("#product").val()); //Este es el producto a editar
+        formData.append('product', $('#product').val()); //Este es el producto a editar
         formData.append('name', $("#name").val());
         formData.append('description', $("#description").val());
         formData.append('price', $("#price").val());
@@ -374,7 +374,7 @@
         console.error("Error al enviar la imagen:", errorMessage);
         // Reinicio de la cola de Dropzone para permitir el reenvío de archivos sino no se puede volver a enviar
         this.removeFile(file);
-        toastr.error(JSON.stringify('Asegurate de completar el formulario'))
+        toastr.error(JSON.stringify('Error al editar el producto. Asegurate de completar el formulario'))
     });
 
     // Iniciar processQueue
@@ -408,6 +408,7 @@
             });
 
             // Agregamos los datos del formulario al formData
+            formData.append('product', $('#product').val()); //El producto a editar
             formData.append('name', $("#name").val());
             formData.append('description', $("#description").val());
             formData.append('price', $("#price").val());
@@ -442,13 +443,14 @@
                     processData: false,
                     contentType: false, 
                     success: function(response) {
+                        toastr.success(JSON.stringify('Producto guardado correctamente'))
                         console.log(response);
                         //Se limpia delete_images:
                         deleteImages = [];
                     },
                     error: function(xhr, status, error) {
                         console.error('Error en la petición Ajax: ' + error);
-                        // Manejar el error si ocurre
+                        toastr.error(JSON.stringify('Error al editar el producto. Asegurate de completar el formulario'))
                     }
                 });
             

@@ -112,43 +112,50 @@ class PanelController extends Controller
 
     public function editProduct(Request $request){
 
-        return response()->json($request);
-
+        
         //Validaciones
         // Imagen
-        $this->validate($request, [
+        /*$this->validate($request, [
             'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072',
-        ]);
+        ]);*/
 
+        //return response()->json($request);
         //Se recupera el producto y se actualizan datos
         $product = Product::where('id', $request->product)->get()->first();
         $product->name = $request->name;
         $product->description = $request->description;
         $product->price = $request->price;
         $product->category_id = $request->category;
-        $product->subcategory_id = $request->subcategory;
+        $product->subcategory_id = $request->category;
         $product->gender_id = $request->genders[0];
         $product->save();
-    
+        
         //Obtenemos todas las combinaciones de colores y talles
         $sizes = $request->input('sizes');
         $colors = $request->input('colors');
 
+        //Consulta las combinaciones de colores para sobreescribirlas
+        //$tallesProducto = DB::table('products_sizes')->where('product_id', $request->product)->get();
+
+        //Elimina las combinaciones de talles y colores preexistentes
+        DB::table('products_sizes')->where('product_id', $request->product)->delete();
+        DB::table('colors_products')->where('product_id', $request->product)->delete();
+
         //Guardamos combinaciones de producto colors y producto sizes
         foreach ($sizes as $size) {
             DB::table('products_sizes')->insert([
-                'product_id' => $product->id, 
+                'product_id' => $request->product, 
                 'size_id' => $size,
             ]);
         }
 
         foreach ($colors as $color) {
             DB::table('colors_products')->insert([
-                'product_id' => $product->id, 
+                'product_id' => $request->product, 
                 'color_id' => $color,
             ]);
         }
-
+        
        /*//Guardo generos
        foreach ($sizes as $size) {
            DB::table('products_sizes')->insert([
@@ -156,12 +163,8 @@ class PanelController extends Controller
                'size_id' => $size,
            ]);
        }*/
-
-
-
-        $products = Product::get()->all();
     
-        return view('panel.edit_products')->with(compact('products'));
+        return response()->json($request);
 
     }
 
