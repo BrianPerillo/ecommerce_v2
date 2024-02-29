@@ -346,18 +346,21 @@
         for (var i = 0; i < productColor.length; i++) {
             formData.append('colors[]', productColor[i]);
         }
-        //log test
+        /*log test
         formData.forEach(function(value, key){
             if(Array.isArray(value)){
                 console.log(key + ': ' + value.join(', '));
             } else {
                 console.log(key + ': ' + value);
             }
-        });
+        });*/
     });
 
     // Evento que se dispara cuando se completa la carga y procesamiento de la imagen
     myDropzone.on("success", function(file, response) {
+        console.log("response");
+        console.log("response");
+        console.log("response");
         console.log(response);
         $('#my-form')[0].reset();
         this.removeFile(file);

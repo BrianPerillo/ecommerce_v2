@@ -112,7 +112,9 @@ class PanelController extends Controller
 
     public function editProduct(Request $request){
 
-        
+
+        //return response()->json($request);
+
         //Validaciones
         // Imagen
         /*$this->validate($request, [
@@ -179,6 +181,29 @@ class PanelController extends Controller
                 return response()->json("No existe la imagen con nombre" . $image_name);}
             }
         }
+
+        //Guardar imagenes nuevas
+
+        if ($request->hasFile('file')) {
+    
+            $file = $request->file('file');
+
+            // Guarda el archivo en carpeta "uploads"
+            $path = Storage::putFileAs('public/product_images', $file, $file->getClientOriginalName());
+            
+            $image = new Image();
+            $image->product_id = $product->id;
+            $image->image_name = $file->getClientOriginalName();
+            $image->save();
+
+            //$file->move(public_path('uploads/product_images'), $file->getClientOriginalName());
+            //return response()->json(['message' => 'Imagen cargada con éxito'], 200);
+        } else {
+            // Si no se encontró un archivo en la solicitud, devuelve un mensaje de errorW
+            //return response()->json(['message' => 'No se encontró una imagen en la solicitud'], 400);
+        }
+
+
 
         return response()->json($request);
 
