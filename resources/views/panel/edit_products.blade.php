@@ -176,8 +176,21 @@
         // url para obtener datos producto
         var findProductUrl = "{{ route('panel.find_product') }}";
 
+        //Variable para almacenar referencias a las imagenes del producto traidas en la peticion ajax para luego poder removerlas de dropzone
+        var displayedFiles = [];
+
+        //Variable para almacenar imagenes a eliminar
+        var deleteImages = [];
+
         // Agrego listener para el evento 'change'
         selectedProduct.addEventListener("change", function(event) {
+
+            // Remover todas las referencias de imagenes mostradas previamente en la caja de dropzone
+            displayedFiles.forEach(function(file) {
+                myDropzone.removeFile(file);
+            });
+
+            myDropzone.removeAllFiles(true);
             // Valor seleccionado del select
             var selectedValue = event.target.value;
             
@@ -206,9 +219,19 @@
                         // Marcar el/los checkbox correspondiente
                             $('#size[value="'+size.id+'"]').prop('checked', true);
                         });
-                        response.colors.forEach(function(size) {
+                        response.colors.forEach(function(color) {
                         // Marcar el/los checkbox correspondiente
-                            $('#color[value="'+size.id+'"]').prop('checked', true);
+                            $('#color[value="'+color.id+'"]').prop('checked', true);
+                        });
+
+                        response.images.forEach(function(image) {
+                            Dropzone.autoDiscover = false;
+                            let mockFile = { name: image.image_name}; 
+                            var image_url = "{{ asset('') }}" + "storage/product_images/" + image.image_name
+                            myDropzone.displayExistingFile(mockFile, image_url);
+                            // Almacenar referencia al archivo mostrado en la matriz
+                            displayedFiles.push(mockFile);
+                            //addCustomRemoveButton(mockFile);
                         });
                     },
                     error: function(xhr, status, error) {
@@ -220,13 +243,32 @@
                 $('#my-form')[0].reset();
             }
         });
+
+
+        // Función para agregar un botón de eliminación personalizado a un archivo
+        function addCustomRemoveButton(file) {
+            var removeButton = Dropzone.createElement("<button class='custom-remove-button'>Eliminar</button>");
+            removeButton.addEventListener("click", function(e) {
+                deleteImages.push(file.name);
+                console.log("deleteImages");
+                console.log(deleteImages);
+                this.removeFile(file);
+                // Eliminar el archivo de tu registro de archivos mostrados
+                removeDisplayedFile(file.name);
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            // Agregar el botón de eliminación personalizado al elemento de vista previa del archivo
+            file.previewElement.appendChild(removeButton);
+        }
+
     </script>
 
 
     <!-- Script para inicializar Dropzone -->
     <script>
 
-    //Guardamos ruta de envió en variable uploadUrl
+    //Ruta de envió en variable uploadUrl
     var uploadUrl = "{{ route('panel.edit_product') }}";
         
     // Se Inicializa Dropzone en el elemento con ID "my-dropzone"
@@ -238,7 +280,7 @@
         acceptedFiles: ".jpg,.jpeg,.png", // Tipos de archivos permitidos
         dictDefaultMessage: "Arrastra y suelta archivos aquí o haz clic para seleccionarlos. Tamaño Máximo: 3MB - Formatos permitidos: .jpg, .jpeg, .png", // Mensaje predeterminado
         createImageThumbnails: true,
-        addRemoveLinks: true,
+        //addRemoveLinks: true,
         init: function() {
             this.on("error", function(file, errorMessage) {
                 if (file.accepted === false) {
@@ -259,6 +301,7 @@
     // Agrega un evento de clic personalizado a las imágenes dentro de Dropzone
     myDropzone.on("addedfile", function(file) {
       var _this = this;
+      addCustomRemoveButton(file);
       file.previewElement.addEventListener("click", function() {
         _this.removeFile(file);
       });
@@ -269,7 +312,7 @@
     //Drop zone envia la peticion solo no hace falta crearla manualmente con ajax, le podemos indicar otros datos también para que envíe:
     myDropzone.on("sending", function(file, xhr, formData) {
 
-        // Guardamos datos checkboxes en arrays
+        // Guardar datos checkboxes en arrays
         var productColor = [];
         $('input[id="color"]:checked').each(function() {
             productColor.push($(this).val());
@@ -283,13 +326,17 @@
             productGenders.push($(this).val());
         });
 
-        // Agregamos los datos del formulario al formData
+        // Agregar datos del formulario al formData
         formData.append('product', $("#product").val()); //Este es el producto a editar
         formData.append('name', $("#name").val());
         formData.append('description', $("#description").val());
         formData.append('price', $("#price").val());
         formData.append('category', $("#category").val());
         formData.append('subcategory', $("#subcategory").val());
+        //Acá se envian las imgs a eliminar, en caso de no haber no se envia el array directamente por que no se ejecuta el for
+        for (var i = 0; i < deleteImages.length; i++) {
+            formData.append('delete_images[]', deleteImages[i]);
+        }
         for (var i = 0; i < productGenders.length; i++) {
             formData.append('genders[]', productGenders[i]);
         }
@@ -311,9 +358,14 @@
 
     // Evento que se dispara cuando se completa la carga y procesamiento de la imagen
     myDropzone.on("success", function(file, response) {
-      console.log("Imagen enviada con éxito:", response);
-      $('#my-form')[0].reset();
-      this.removeFile(file);
+        console.log(response);
+        $('#my-form')[0].reset();
+        this.removeFile(file);
+        // Remover todas las referencias de imagenes mostradas previamente en la caja de dropzone
+        displayedFiles.forEach(function(file) {
+            myDropzone.removeFile(file);
+        });
+
       toastr.success(JSON.stringify('Producto guardado correctamente'))
     });
 
@@ -325,13 +377,82 @@
         toastr.error(JSON.stringify('Asegurate de completar el formulario'))
     });
 
-    // Evento de clic en el botón "Guardar"
+    // Iniciar processQueue
     $("#saveProduct").click(function() {
         
         event.preventDefault();
 
-        // Procesa la cola de Dropzone, enviando los archivos al servidor junto con la data adicional del formulario.
-        myDropzone.processQueue();
+        // Verificar si hay archivos en la cola de carga
+        var queuedFiles = myDropzone.getQueuedFiles();
+
+        if (queuedFiles.length > 0) {
+            // Se procesa la cola de Dropzone para enviar los archivos al servidor
+            myDropzone.processQueue();
+        } else {
+
+            // Si no hay archivos en la cola se realiza una petición AJAX con los demas datos del formulario
+            var formData = new FormData();
+
+            // Se guarda data del formulario
+            var productColor = [];
+            $('input[id="color"]:checked').each(function() {
+                productColor.push($(this).val());
+            });
+            var productSize = [];
+            $('input[id="size"]:checked').each(function() {
+                productSize.push($(this).val());
+            });
+            var productGenders = [];
+            $('input[id="gender"]:checked').each(function() {
+                productGenders.push($(this).val());
+            });
+
+            // Agregamos los datos del formulario al formData
+            formData.append('name', $("#name").val());
+            formData.append('description', $("#description").val());
+            formData.append('price', $("#price").val());
+            formData.append('category', $("#category").val());
+            formData.append('subcategory', $("#subcategory").val());
+            for (var i = 0; i < deleteImages.length; i++) {
+                formData.append('delete_images[]', deleteImages[i]);
+            }
+            for (var i = 0; i < productGenders.length; i++) {
+                formData.append('genders[]', productGenders[i]);
+            }
+            for (var i = 0; i < productSize.length; i++) {
+                formData.append('sizes[]', productSize[i]);
+            }
+            for (var i = 0; i < productColor.length; i++) {
+                formData.append('colors[]', productColor[i]);
+            }
+            //log test
+            formData.forEach(function(value, key){
+                if(Array.isArray(value)){
+                    console.log(key + ': ' + value.join(', '));
+                } else {
+                    console.log(key + ': ' + value);
+                }
+            });
+
+            //Peticion Ajax
+            $.ajax({
+                    url: uploadUrl,
+                    type: 'POST', 
+                    data: formData, 
+                    processData: false,
+                    contentType: false, 
+                    success: function(response) {
+                        console.log(response);
+                        //Se limpia delete_images:
+                        deleteImages = [];
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error en la petición Ajax: ' + error);
+                        // Manejar el error si ocurre
+                    }
+                });
+            
+        }
 
     });
 

@@ -30,6 +30,7 @@ class PanelController extends Controller
 
     }
 
+    //Formularios para crear registros
     public function form(Request $request){ 
 
         $categories = Category::get()->all();
@@ -64,15 +65,16 @@ class PanelController extends Controller
 
     }
 
+    //Formularios para editar registros
     public function formEdit(Request $request){ 
 
-        $products = Product::get()->all();
+        $products = Product::with('images')->get()->all();
         $categories = Category::get()->all();
         $subcategories = Subcategory::get()->all();
         $genders = Gender::get()->all();
         $colors = Color::get()->all();
         $sizes = Size::get()->all();
-        
+
         switch ($request->section) {
             case 'products':
                 return view('panel.edit_products')->with(compact('categories', 'subcategories', 'genders', 'colors', 'sizes', 'products'));
@@ -96,6 +98,70 @@ class PanelController extends Controller
                 # code...
             break;
         }
+
+    }
+    
+    //Esta función devuelve los datos del producto a editar
+    public function findProduct(Request $request){
+    
+        $product_data = Product::with('sizes','colors','category','subcategory', 'images')->where('id', $request->product)->first();
+
+        return response()->json($product_data);
+
+    }
+
+    public function editProduct(Request $request){
+
+        return response()->json($request);
+
+        //Validaciones
+        // Imagen
+        $this->validate($request, [
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072',
+        ]);
+
+        //Se recupera el producto y se actualizan datos
+        $product = Product::where('id', $request->product)->get()->first();
+        $product->name = $request->name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->category_id = $request->category;
+        $product->subcategory_id = $request->subcategory;
+        $product->gender_id = $request->genders[0];
+        $product->save();
+    
+        //Obtenemos todas las combinaciones de colores y talles
+        $sizes = $request->input('sizes');
+        $colors = $request->input('colors');
+
+        //Guardamos combinaciones de producto colors y producto sizes
+        foreach ($sizes as $size) {
+            DB::table('products_sizes')->insert([
+                'product_id' => $product->id, 
+                'size_id' => $size,
+            ]);
+        }
+
+        foreach ($colors as $color) {
+            DB::table('colors_products')->insert([
+                'product_id' => $product->id, 
+                'color_id' => $color,
+            ]);
+        }
+
+       /*//Guardo generos
+       foreach ($sizes as $size) {
+           DB::table('products_sizes')->insert([
+               'product_id' => $product->id, 
+               'size_id' => $size,
+           ]);
+       }*/
+
+
+
+        $products = Product::get()->all();
+    
+        return view('panel.edit_products')->with(compact('products'));
 
     }
 
@@ -197,85 +263,6 @@ class PanelController extends Controller
     }
 
 
-    //Esta función devuelve los datos del producto a editar
-    public function findProduct(Request $request){
-    
-        $product_data = Product::with('sizes','colors','category','subcategory')->where('id', $request->product)->first();
-
-        return response()->json($product_data);
-
-    }
-
-
-    public function editProduct(Request $request){
-
-        //Validaciones
-        
-        // Imagen
-        $this->validate($request, [
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072',
-        ]);
-
-        //Se recupera el producto y se actualizan datos
-        $product = Product::where('id', $request->product)->get()->first();
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->category_id = $request->category;
-        $product->subcategory_id = $request->subcategory;
-        $product->gender_id = $request->genders[0];
-        $product->save();
-    
-        //Obtenemos todas las combinaciones de colores y talles
-        $sizes = $request->input('sizes');
-        $colors = $request->input('colors');
-
-        //Guardamos combinaciones de producto colors y producto sizes
-        foreach ($sizes as $size) {
-            DB::table('products_sizes')->insert([
-                'product_id' => $product->id, 
-                'size_id' => $size,
-            ]);
-        }
-
-        foreach ($colors as $color) {
-            DB::table('colors_products')->insert([
-                'product_id' => $product->id, 
-                'color_id' => $color,
-            ]);
-        }
-
-       /*//Guardo generos
-       foreach ($sizes as $size) {
-           DB::table('products_sizes')->insert([
-               'product_id' => $product->id, 
-               'size_id' => $size,
-           ]);
-       }*/
-
-       //Guardamos Stock 
-       $combinaciones = array();
-       foreach ($sizes as $valor1) {
-         foreach ($colors as $valor2) {
-           $combinaciones[] = array($valor1, $valor2);
-         }
-       }
-
-       foreach ($combinaciones as $combinacion) {
-           $stock = new Stock();
-           $stock->product_id = $product->id;
-           $stock->size_id = $combinacion[0];
-           $stock->color_id = $combinacion[1];
-           $stock->stock = $request->stock;
-           $stock->save();
-        }
-
-
-        $products = Product::get()->all();
-    
-        return view('panel.edit_products')->with(compact('products'));
-
-    }
 
     public function saveFeature(Request $request){ 
 
