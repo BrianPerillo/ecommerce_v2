@@ -163,7 +163,23 @@ class PanelController extends Controller
                'size_id' => $size,
            ]);
        }*/
-    
+       
+        //Eliminar imagen si se envió el array delete_imagenes
+        $images = Image::where('product_id', $request->product)->pluck('image_name')->all();
+
+        if (isset($request->all()['delete_images'])) {
+           
+            //Recorrido por el array delete_images para eliminar las imagenes
+            foreach ($request->delete_images as $image_name) {
+                //Antes de eliminar se chequea que exista una imagen con el nombre dado en la base, ya que podría llegar a ocurrir que no exista el nombre.
+                if(in_array($image_name, $images)){
+                    //Si existe se elimina
+                    Image::where('image_name', $image_name)->delete();
+                }else{
+                return response()->json("No existe la imagen con nombre" . $image_name);}
+            }
+        }
+
         return response()->json($request);
 
     }
