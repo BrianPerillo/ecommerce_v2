@@ -37,9 +37,12 @@ Route::middleware(['auth:sanctum'])->group(function () { //Acá falta chequear q
     Route::get('/admin/form/delete/{section}', [PanelController::class, "formDelete"])->name('panel.products');
     Route::post('/admin/saveproduct', [PanelController::class, "saveProduct"])->name('panel.save_product');
     Route::post('/admin/saveFeature', [PanelController::class, "saveFeature"])->name('panel.save_feature');
+    Route::post('/admin/editProduct', [PanelController::class, "editProduct"])->name('panel.edit_product');
     Route::post('/admin/editFeature', [PanelController::class, "editFeature"])->name('panel.edit_feature');
-    Route::post('/admin/editproduct', [PanelController::class, "editProduct"])->name('panel.edit_product');
+    Route::post('/admin/deleteProduct', [PanelController::class, "deleteProduct"])->name('panel.delete_product');
+    Route::post('/admin/deleteFeature', [PanelController::class, "deleteFeature"])->name('panel.delete_feature');
     Route::post('/admin/findproduct', [PanelController::class, "findProduct"])->name('panel.find_product');
+
 });
 
 // Rutas protegidas CartController

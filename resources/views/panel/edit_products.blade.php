@@ -140,7 +140,7 @@
                     <div class="dz-message" data-dz-message><span>Arrastra y suelta archivos aquí o haz clic para seleccionarlos.</span><p class="mt-2" style="font-size:15px">Tamaño Máximo: 3MB - Formatos permitidos: .jpg, .jpeg y .png</p></div>
                 </div>
 
-                <button id="saveProduct" type="submit" class="btn btn-primary mt-3" style="width: 100%">Guardar</button>
+                <button id="saveProduct" type="submit" class="btn btn-primary mt-3" style="width: 100%">Guardar Cambios</button>
 
             </form>
         </div>
@@ -187,8 +187,9 @@
         // Agrego listener para el evento 'change'
         selectedProduct.addEventListener("change", function(event) {
 
-            //Vacio deleteImages si se cambia de producto
+            //Vacio deleteImages y productPreviousImages si se cambia de producto
             deleteImages = [];
+            productPreviousImages = [];
 
             // Remover todas las referencias de imagenes mostradas previamente en la caja de dropzone
             displayedFiles.forEach(function(file) {
