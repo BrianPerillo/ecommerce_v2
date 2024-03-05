@@ -182,8 +182,13 @@
         //Variable para almacenar imagenes a eliminar
         var deleteImages = [];
 
+        var productPreviousImages = [];
+
         // Agrego listener para el evento 'change'
         selectedProduct.addEventListener("change", function(event) {
+
+            //Vacio deleteImages si se cambia de producto
+            deleteImages = [];
 
             // Remover todas las referencias de imagenes mostradas previamente en la caja de dropzone
             displayedFiles.forEach(function(file) {
@@ -232,7 +237,13 @@
                             // Almacenar referencia al archivo mostrado en la matriz
                             displayedFiles.push(mockFile);
                             //addCustomRemoveButton(mockFile);
+                            //Almaceno imagenes del producto en array para validación posterior en envio ajax: 
+                            productPreviousImages.push(image.image_name);
                         });
+
+                       
+
+
                     },
                     error: function(xhr, status, error) {
                         console.error('Error en la petición Ajax: ' + error);
@@ -245,7 +256,7 @@
         });
 
 
-        // Función para agregar un botón de eliminación personalizado a un archivo
+        // Función para agregar un botón de eliminación personalizado a una imagen que vaya cargando el array deleteImages
         function addCustomRemoveButton(file) {
             var removeButton = Dropzone.createElement("<button class='custom-remove-button'>Eliminar</button>");
             removeButton.addEventListener("click", function(e) {
@@ -377,87 +388,104 @@
         console.error("Error al enviar la imagen:", errorMessage);
         // Reinicio de la cola de Dropzone para permitir el reenvío de archivos sino no se puede volver a enviar
         this.removeFile(file);
-        toastr.error(JSON.stringify('Error al editar el producto. Asegurate de completar el formulario'))
+        toastr.error(JSON.stringify('Error al editar el producto. Asegurate de completar el formulario :)'))
     });
 
     // Iniciar processQueue
     $("#saveProduct").click(function() {
-        
+
+        console.log("asdfasdfasdfasdfasdfasdfasdfasfdasfdasdf");
+        console.log(deleteImages.length);
+        console.log(productPreviousImages.length);
+
         event.preventDefault();
 
         // Verificar si hay archivos en la cola de carga
         var queuedFiles = myDropzone.getQueuedFiles();
 
+        //Si se cargaron archivos en Dropzone:
         if (queuedFiles.length > 0) {
             // Se procesa la cola de Dropzone para enviar los archivos al servidor
             myDropzone.processQueue();
+
+        //Si no se cargaron imagenes en dropzone se realiza petición ajax:
         } else {
+            // Dado que no se cargaron nuevas imagenes por dropzone, chequeo que existan imagenes asociadas al producto y no se hayan removido todas
+            if(deleteImages.length == productPreviousImages.length){
+                toastr.error(JSON.stringify('El producto no tiene imagenes asociadas. Por favor agrega alguna imagen para el producto'))
+            } 
+            else { // Si no quedaron imagenes asociadas porque no cargo nuevas y eliminó todas las preexistentes: 
 
-            // Si no hay archivos en la cola se realiza una petición AJAX con los demas datos del formulario
-            var formData = new FormData();
+                // Si no hay archivos en la cola se realiza una petición AJAX con los demas datos del formulario
+                var formData = new FormData();
 
-            // Se guarda data del formulario
-            var productColor = [];
-            $('input[id="color"]:checked').each(function() {
-                productColor.push($(this).val());
-            });
-            var productSize = [];
-            $('input[id="size"]:checked').each(function() {
-                productSize.push($(this).val());
-            });
-            var productGenders = [];
-            $('input[id="gender"]:checked').each(function() {
-                productGenders.push($(this).val());
-            });
+                // Se guarda data del formulario
+                var productColor = [];
+                $('input[id="color"]:checked').each(function() {
+                    productColor.push($(this).val());
+                });
+                var productSize = [];
+                $('input[id="size"]:checked').each(function() {
+                    productSize.push($(this).val());
+                });
+                var productGenders = [];
+                $('input[id="gender"]:checked').each(function() {
+                    productGenders.push($(this).val());
+                });
 
-            // Agregamos los datos del formulario al formData
-            formData.append('product', $('#product').val()); //El producto a editar
-            formData.append('name', $("#name").val());
-            formData.append('description', $("#description").val());
-            formData.append('price', $("#price").val());
-            formData.append('category', $("#category").val());
-            formData.append('subcategory', $("#subcategory").val());
-            for (var i = 0; i < deleteImages.length; i++) {
-                formData.append('delete_images[]', deleteImages[i]);
-            }
-            for (var i = 0; i < productGenders.length; i++) {
-                formData.append('genders[]', productGenders[i]);
-            }
-            for (var i = 0; i < productSize.length; i++) {
-                formData.append('sizes[]', productSize[i]);
-            }
-            for (var i = 0; i < productColor.length; i++) {
-                formData.append('colors[]', productColor[i]);
-            }
-            //log test
-            formData.forEach(function(value, key){
-                if(Array.isArray(value)){
-                    console.log(key + ': ' + value.join(', '));
-                } else {
-                    console.log(key + ': ' + value);
+                // Agregamos los datos del formulario al formData
+                formData.append('product', $('#product').val()); //El producto a editar
+                formData.append('name', $("#name").val());
+                formData.append('description', $("#description").val());
+                formData.append('price', $("#price").val());
+                formData.append('category', $("#category").val());
+                formData.append('subcategory', $("#subcategory").val());
+                for (var i = 0; i < deleteImages.length; i++) {
+                    formData.append('delete_images[]', deleteImages[i]);
                 }
-            });
-
-            //Peticion Ajax
-            $.ajax({
-                    url: uploadUrl,
-                    type: 'POST', 
-                    data: formData, 
-                    processData: false,
-                    contentType: false, 
-                    success: function(response) {
-                        toastr.success(JSON.stringify('Producto guardado correctamente'))
-                        console.log(response);
-                        //Se limpia delete_images:
-                        deleteImages = [];
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error en la petición Ajax: ' + error);
-                        toastr.error(JSON.stringify('Error al editar el producto. Asegurate de completar el formulario'))
+                for (var i = 0; i < productGenders.length; i++) {
+                    formData.append('genders[]', productGenders[i]);
+                }
+                for (var i = 0; i < productSize.length; i++) {
+                    formData.append('sizes[]', productSize[i]);
+                }
+                for (var i = 0; i < productColor.length; i++) {
+                    formData.append('colors[]', productColor[i]);
+                }
+                //log test
+                formData.forEach(function(value, key){
+                    if(Array.isArray(value)){
+                        console.log(key + ': ' + value.join(', '));
+                    } else {
+                        console.log(key + ': ' + value);
                     }
                 });
+
+                //Peticion Ajax
+                $.ajax({
+                        url: uploadUrl,
+                        type: 'POST', 
+                        data: formData, 
+                        processData: false,
+                        contentType: false, 
+                        success: function(response) {
+                            toastr.success(JSON.stringify('Producto guardado correctamente'))
+                            console.log(response);
+                            //Se limpia delete_images:
+                            deleteImages = [];
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error en la petición Ajax: ' + error);
+                            toastr.error(JSON.stringify('Error al editar el producto. Asegurate de completar el formulario :)'))
+                        }
+                    });
+            }
+            
             
         }
+
+
+
 
     });
 

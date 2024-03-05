@@ -255,7 +255,7 @@ class PanelController extends Controller
         
         // Imagen
         $this->validate($request, [
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif|max:3072',
+            'file' => 'required|image|max:3072',
         ]);
 
 
