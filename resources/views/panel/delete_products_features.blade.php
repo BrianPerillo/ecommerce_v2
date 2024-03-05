@@ -28,17 +28,17 @@
                                         @endforeach
                                     </select>
                                     <div class="form-group">
-                                        <label for="name">Nombre Subcategoría</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
                                         <input type="hidden" value="subcategory" name="feature">
                                     </div>
-                                    <label for="related_category">Categoría Relacionada</label>
-                                    <select type="text" class="form-control" id="related_category" name="related_category" required>
-                                        @foreach($categories as $category)
-                                            <option value="{{$category->id}}" id="{{$category->id}}">{{$category->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    <button id="deleteProduct" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+
+                                    <button id="delete" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+
+                                    <div class="alert alert-warning mt-4" role="alert" style="background-color:rgba(240, 229, 82, 0.192)">
+                                        <h4 class="alert-heading" style="color:rgb(243, 169, 57)"><span style="font-size: 23px; position:relative; bottom:5px;margin-right:10px">⚠</span>Advertencia</h4>
+                                        <p style="color:rgb(104, 104, 104)">Al eliminar una subcategoría se eliminarán los productos que estén asociados a la subcategoría. La categoría a la que pertenzca seguirá existiendo pero se puede eliminar desde la sección categorias.</p>
+                                        <hr>
+                                        <p class="mb-0" style="color:rgb(104, 104, 104)">Si no deseas que se eliminen los productos asociados a la subcategoría entonces primero debes crear una nueva subcategoría y asociarla con los productos, luego eliminar la subcategoría.</p>
+                                    </div>
                                 @else 
                                     <p>No hay subcategorias cargadas</p>
                                 @endif  
@@ -53,12 +53,17 @@
                                         @endforeach
                                     </select>
                                     <div class="form-group">
-                                        <label for="name">Nombre Categoria</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
                                         <input type="hidden" value="category" name="feature">
                                     </div>
                                     
-                                    <button id="deleteProduct" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+                                    <button id="delete" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+
+                                    <div class="alert alert-warning mt-4" role="alert" style="background-color:rgba(240, 229, 82, 0.192)">
+                                        <h4 class="alert-heading" style="color:rgb(243, 169, 57)"><span style="font-size: 23px; position:relative; bottom:5px;margin-right:10px">⚠</span>Advertencia</h4>
+                                        <p style="color:rgb(104, 104, 104)">Al eliminar una categoría se eliminarán también los productos que se encuentren dentro de la categoría, así como también las subcategorías que tenga asociadas</p>
+                                        <hr>
+                                        <p class="mb-0" style="color:rgb(104, 104, 104)">Si no deseas eliminar sus productos y subcategorías asociadas primero debes crear una nueva categoría y asociarla con los productos y subcategorías que desees y luego eliminar la categoría</p>
+                                    </div>
                                 @else 
                                     <p>No hay categorias cargadas</p>
                                 @endif 
@@ -78,7 +83,7 @@
                                         <input type="hidden" value="size" name="feature">
                                     </div>
                                         
-                                    <button id="deleteProduct" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+                                    <button id="delete" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
                                 @else 
                                     <p>No hay talles cargados</p>
                                 @endif 
@@ -100,7 +105,7 @@
                                         <input type="hidden" value="color" name="feature">
                                     </div>
                                     
-                                    <button id="deleteProduct" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+                                    <button id="delete" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
                                 @else 
                                     <p>No hay colores cargados</p>
                                 @endif 
@@ -120,7 +125,7 @@
                                         <input type="hidden" value="gender" name="feature">
                                     </div>
                                     
-                                    <button id="deleteProduct" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+                                    <button id="delete" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
                                 @else 
                                     <p>No hay géneros cargados</p>
                                 @endif 
