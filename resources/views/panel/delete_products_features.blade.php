@@ -74,7 +74,7 @@
                                 @if($sizes !== null)
                                     <select type="text" class="form-control" id="size" name="size" required>
                                         @foreach($sizes as $size)
-                                            <option value="{{$size->id}}" id="{{$size->id}}" @if(session('sizeToDelete') !== null && $size->id == session('sizeToDelete')) selected @endif>{{$size->name}}</option>
+                                            <option value="{{$size->id}}" id="{{$size->id}}" @if(session('sizeToDelete') !== null && $size->id == session('sizeToDelete'))selected @endif>{{$size->name}}</option>
                                         @endforeach
                                     </select>
                                     <div class="form-group">
@@ -113,18 +113,35 @@
                                 @if($colors !== null)
                                     <select type="text" class="form-control" id="color" name="color" required>
                                         @foreach($colors as $color)
-                                            <option value="{{$color->id}}" id="{{$color->id}}">{{$color->name}}</option>
+                                            <option value="{{$color->id}}" id="{{$color->id}}" @if(session('colorToDelete') !== null && $color->id == session('colorToDelete'))selected @endif>{{$color->name}}</option>
                                         @endforeach
                                     </select>
+
                                     <div class="form-group">
-                                        <label for="name">Nombre Color</label>
-                                        <input type="text" class="form-control" id="name" name="name" required>
-                                        <label for="name">Hexadecimal Color</label>
-                                        <input type="text" class="form-control" id="hexa" name="hexa" required>
                                         <input type="hidden" value="color" name="feature">
                                     </div>
-                                    
+
                                     <button id="delete" type="submit" class="btn btn-danger mt-3" style="width: 100%">Eliminar</button>
+
+                                    @if(session('message')!==null)
+                                        <div class="alert alert-warning mt-4" role="alert" style="background-color:rgba(240, 229, 82, 0.192)">
+                                            <h4 class="alert-heading" style="color:rgb(243, 169, 57)"><span style="font-size: 23px; position:relative; bottom:5px;margin-right:10px">⚠</span>Advertencia</h4>
+                                            <p style="color:rgb(104, 104, 104)">{{session('message')}} Si eliminas el color, los siguientes productos se quedarán sin colores asociados:</p>
+                                            <hr>
+                                            <p class="mb-0" style="color:rgb(104, 104, 104)">
+                                                @if(session('products'))
+                                                    @foreach(session('products') as $product)
+                                                        {{$product->name . " "}}
+                                                    @endforeach
+                                                @endif
+                                            </p>
+                                            </br>
+                                            <p>Si deseas continuar igual, puedes hacerlo desde el botón eliminar</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" value="true" name="confirmDelete">
+                                        </div>
+                                    @endif
                                 @else 
                                     <p>No hay colores cargados</p>
                                 @endif 

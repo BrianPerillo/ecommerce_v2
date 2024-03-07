@@ -551,15 +551,34 @@ class PanelController extends Controller
             return redirect()->back();
         }
         elseif($request->feature == 'color'){
-            $color = Color::where('id', $request->color)->get()->first();
+      
+            //ConfirmDelete permite saber si el usuario confirma el delte pese a las advertencias (message en session flash)
+            if(isset($request->confirmDelete) && $request->confirmDelete){
+                $size = Color::where('id', $request->color)->delete();
+            }
 
-            $color->name = $request->name;
-            $color->color = $request->hexa;            
-            $color->save();
-    
-            $colors = Color::get()->all();
-            
-            return view('panel.edit_products_features')->with(compact('colors'));
+            //Consuta si existen productos disponibles solamente en el color que se quiere eliminar
+            $products = Product::with('colors')
+            ->whereHas('colors', function ($query) use ($request) {
+                $query->where('color_id', $request->color);
+            })
+            ->whereDoesntHave('colors', function ($query) use ($request) {
+                $query->where('color_id', '!=', $request->color);
+            })
+            ->get()->all();
+
+            //Si no hay productos que estén disponibles solamente en el talle a eliminar:
+            if(empty($products)){
+                $color = Color::where('id', $request->color)->delete();
+            }
+            else{//Si los hay, se advierte al usuario
+                $request->session()->flash('colorToDelete', $request->color);
+                $request->session()->flash('message', 'Hay productos que solo se encuentran disponibles en el color que deseas eliminar.');
+                $request->session()->flash('products', $products);
+                return redirect()->back();
+            }
+
+            return redirect()->back();
         }        
         elseif($request->feature == 'gender'){
             $gender = Gender::where('id', $request->gender)->get()->first();
