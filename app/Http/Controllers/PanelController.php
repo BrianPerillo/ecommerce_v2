@@ -521,14 +521,34 @@ class PanelController extends Controller
             return redirect()->back();
         }
         elseif($request->feature == 'size'){
-            $size = Size::where('id', $request->size)->get()->first();
 
-            $size->name = $request->name;
-            $size->save();
-    
-            $sizes = Size::get()->all();
-            
-            return view('panel.edit_products_features')->with(compact('sizes'));
+            //ConfirmDelete permite saber si el usuario confirma el delte pese a las advertencias (el message en session flash)
+            if(isset($request->confirmDelete) && $request->confirmDelete){
+                $size = Size::where('id', $request->size)->delete();
+            }
+
+            //Consuta si existen productos disponibles solamente en el talle que se quiere eliminar
+            $products = Product::with('sizes')
+            ->whereHas('sizes', function ($query) use ($request) {
+                $query->where('size_id', $request->size);
+            })
+            ->whereDoesntHave('sizes', function ($query) use ($request) {
+                $query->where('size_id', '!=', $request->size);
+            })
+            ->get()->all();
+
+            //Si no hay productos que estén disponibles solamente en el talle a eliminar:
+            if(empty($products)){
+                $size = Size::where('id', $request->size)->delete();
+            }
+            else{//Si los hay, se advierte al usuario
+                $request->session()->flash('sizeToDelete', $request->size);
+                $request->session()->flash('message', 'Hay productos que solo se encuentran disponibles en el talle que deseas eliminar.');
+                $request->session()->flash('products', $products);
+                return redirect()->back();
+            }
+
+            return redirect()->back();
         }
         elseif($request->feature == 'color'){
             $color = Color::where('id', $request->color)->get()->first();
