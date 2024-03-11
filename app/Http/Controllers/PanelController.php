@@ -599,12 +599,27 @@ class PanelController extends Controller
 
         //Por ahora en lugar de mostrar ventas se muestran ordenes.
         $orders = Order::with('products.product_detail.category', 'products.product_detail.subcategory', 'products.product_detail', 'products.color', 'products.size')->get()->all();
+        //dd(response()->json($orders));
 
+        //Guardo los productos que se encuentran en ordenes
+        $products = [];
+
+        foreach($orders as $order){
+            foreach($order['products'] as $product){
+                $products[] = [
+                    'name' => $product->product_detail['name'],
+                    'order_id' => $order['id']
+                ];
+            }
+        }
+
+        //$ordersPorProducto = Order::with('products.product_detail')->get()->all();
+     
         $stocks = Stock::with('product_detail', 'product_detail.category', 'product_detail.subcategory', 'color', 'size')->get()->all();
 
         $users = User::get()->all();
 
-        return view('panel.data_analisis')->with(compact('orders', 'stocks', 'users'));
+        return view('panel.data_analisis')->with(compact('orders', 'stocks', 'users', 'products'));
 
     }
 
