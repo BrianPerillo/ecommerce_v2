@@ -6,10 +6,12 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Gender;
 use App\Models\Image;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\Stock;
 use App\Models\Subcategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -592,5 +594,20 @@ class PanelController extends Controller
         }        
 
     }
+
+    public function dataAnalisis(Request $request){
+
+        //Por ahora en lugar de mostrar ventas se muestran ordenes.
+        $orders = Order::with('products.product_detail.category', 'products.product_detail.subcategory', 'products.product_detail', 'products.color', 'products.size')->get()->all();
+
+        $stocks = Stock::with('product_detail', 'product_detail.category', 'product_detail.subcategory', 'color', 'size')->get()->all();
+
+        $users = User::get()->all();
+
+        return view('panel.data_analisis')->with(compact('orders', 'stocks', 'users'));
+
+    }
+
+
 
 }

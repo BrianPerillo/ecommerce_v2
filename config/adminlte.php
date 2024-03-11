@@ -311,7 +311,7 @@ return [
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
-        //['header' => 'CARGAR'],
+        ['header' => 'CRUD'],
         [
             'text'    => 'Productos',
             'icon'    => 'far fa-fw fa-file',
@@ -468,6 +468,14 @@ return [
                 ],
             ],
         ],
+        /////////
+        ['header' => 'Análisis de Datos'],
+        [
+            'text' => 'Dashboards',
+            'url'  => 'admin/data_analisis',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        /////////
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
