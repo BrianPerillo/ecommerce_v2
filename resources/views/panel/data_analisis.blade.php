@@ -12,6 +12,9 @@
         <div id="chart-container">
                 <canvas id="chart" width="400px" height="400px"></canvas>
         </div>
+        <div style="width: 50%;">
+            <canvas id="myPieChart"></canvas>
+        </div>
     </div>
 
    {{-- @foreach($orders as $order) 
@@ -42,9 +45,9 @@
         // Obtenemos el contenedor donde queremos colocar los gráficos
         var container = document.getElementById('chart-container');
 
-        var products = <?php echo json_encode($products); ?>;
+        var products = @json($products);
 
-        var orders = <?php echo json_encode($orders); ?>;
+        var orders = @json($orders);
 
         var productCounts = {};
 
@@ -65,8 +68,10 @@
             });
         });
 
-        var labels = [];
+        //Conviero a array el productConts
+        var productCounts = Object.entries(productCounts).map(([label, data]) => data);
 
+        var labels = [];
         //Se agrega como label el nombre de cada producto iterado
         products.forEach(function(product){ 
             // Verifica si el nombre del producto ya está en el array de etiquetas
@@ -75,17 +80,6 @@
                 labels.push(product.name);
             }
         });
-
-        var data = [];
-        products.forEach(function(product){ 
-            // Verifica si el nombre del producto ya está en el array de etiquetas
-            if (!labels.includes(product.name)) {
-                // Agrega el nombre del producto al array de etiquetas
-                labels.push(product.name);
-            }
-        });
-
-
 
         var canvasId = 'chart';
         var ctx = document.getElementById(canvasId).getContext('2d');
@@ -130,5 +124,48 @@
 
         console.log(labels);
     </script>
+    
+    <script>
+        // Datos para el gráfico
+        var data = {
+            labels: labels,
+            datasets: [{
+                label: 'Dataset 1',
+                data: productCounts,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
 
+        // Obtener el contexto del lienzo
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+
+        // Crear el gráfico de tarta
+        var myPieChart = new Chart(ctx, {
+            type: 'pie', // Tipo de gráfico
+            data: data,
+            options: {
+                responsive: true, // Hacer el gráfico responsivo
+                maintainAspectRatio: false, // No mantener el aspect ratio
+                legend: {
+                    position: 'top' // Posición de la leyenda
+                }
+            }
+        });
+    </script>
     @stop
