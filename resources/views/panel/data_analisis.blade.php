@@ -118,7 +118,10 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true // Empezar el eje Y en cero
+                        beginAtZero: true, // Empezar el eje Y en cero
+                        min: 0, // Establece el valor mínimo del eje Y en 0
+                        max: 10, // Establece el valor máximo del eje Y
+                        stepSize: 1 // Establece el tamaño del paso en el eje Y a 1
                     }
                 }
             }
