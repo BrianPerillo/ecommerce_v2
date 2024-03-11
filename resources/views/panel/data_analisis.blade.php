@@ -9,10 +9,10 @@
 
     @section('content')
     <div class="row justify-content-center mt-4">
-        <div id="chart-container">
+        <div id="chart-container" class="m-5">
                 <canvas id="chart" width="400px" height="400px"></canvas>
         </div>
-        <div style="width: 50%;">
+        <div class="m-5">
             <canvas id="myPieChart"></canvas>
         </div>
     </div>
